@@ -1,0 +1,32 @@
+version: '3'
+services:
+  mysqlServerContainer:
+    image: 087c6f86492c #mysql/mysql-server #mysql:5.7 #mysql/mysql-server
+    #container_name: mysqlServerContainer
+    restart: always
+    environment:
+      MYSQL_DATABASE: jwt_spring_application_docker
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PASSWORD: password
+      MYSQL_USERNAME: root
+
+    ports:
+      - 3307:3306
+
+  springBootAppContainer:
+    image: spring-boot-app
+    ports:
+      - "8081:8081"
+    environment:
+      #SPRING_DATASOURCE_URL:jdbc: mysql://localhost:3309/jwt_spring_application_docker?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
+      SPRING_DATASOURCE_URL:jdbc: mysql://mysqlServerContainer:3306/jwt_spring_application_docker?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+
+    depends_on:
+      - mysqlServerContainer
