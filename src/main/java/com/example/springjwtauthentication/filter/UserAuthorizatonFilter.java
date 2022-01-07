@@ -1,6 +1,6 @@
 package com.example.springjwtauthentication.filter;
 
-import com.example.springjwtauthentication.jwt.JwtHelper;
+import com.example.springjwtauthentication.security.jwt.JwtHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
 

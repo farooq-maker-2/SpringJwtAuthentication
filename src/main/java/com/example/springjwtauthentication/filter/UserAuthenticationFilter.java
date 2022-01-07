@@ -1,6 +1,6 @@
 package com.example.springjwtauthentication.filter;
 
-import com.example.springjwtauthentication.jwt.JwtHelper;
+import com.example.springjwtauthentication.security.jwt.JwtHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
