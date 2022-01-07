@@ -1,4 +1,4 @@
-package com.example.springjwtauthentication.admin;
+package com.example.springjwtauthentication.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "admins")
 @Data
 public class Admin {
 

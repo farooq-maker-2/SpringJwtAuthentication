@@ -1,9 +1,9 @@
 package com.example.springjwtauthentication.security;
 
-import com.example.springjwtauthentication.filter.UserAuthenticationFilter;
-import com.example.springjwtauthentication.filter.UserAuthorizatonFilter;
+import com.example.springjwtauthentication.security.filter.UserAuthenticationFilter;
+import com.example.springjwtauthentication.security.filter.UserAuthorizatonFilter;
 import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.user.User;
+import com.example.springjwtauthentication.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 
-import javax.servlet.FilterChain;
 import java.util.Arrays;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;

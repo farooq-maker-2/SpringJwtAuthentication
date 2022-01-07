@@ -1,14 +1,17 @@
-package com.example.springjwtauthentication.teacher;
+package com.example.springjwtauthentication.entity;
 
-import com.example.springjwtauthentication.course.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "teachers")
 @Data
 @Builder
 @NoArgsConstructor

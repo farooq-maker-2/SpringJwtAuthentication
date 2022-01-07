@@ -1,13 +1,13 @@
-package com.example.springjwtauthentication.api;
+package com.example.springjwtauthentication.controller;
 
-import com.example.springjwtauthentication.admin.Admin;
-import com.example.springjwtauthentication.admin.AdminRepository;
+import com.example.springjwtauthentication.entity.Admin;
+import com.example.springjwtauthentication.repository.AdminRepository;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.student.Student;
-import com.example.springjwtauthentication.teacher.Teacher;
+import com.example.springjwtauthentication.entity.Student;
+import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.user.User;
+import com.example.springjwtauthentication.entity.User;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

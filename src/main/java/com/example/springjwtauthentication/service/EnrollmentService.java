@@ -1,6 +1,6 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.enrollment.EnrollmentRepository;
+import com.example.springjwtauthentication.repository.EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,6 @@
-package com.example.springjwtauthentication.course;
+package com.example.springjwtauthentication.repository;
 
+import com.example.springjwtauthentication.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

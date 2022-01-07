@@ -1,9 +1,9 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.teacher.Teacher;
-import com.example.springjwtauthentication.teacher.TeacherRepository;
-import com.example.springjwtauthentication.user.User;
-import com.example.springjwtauthentication.user.UserRepository;
+import com.example.springjwtauthentication.entity.Teacher;
+import com.example.springjwtauthentication.repository.TeacherRepository;
+import com.example.springjwtauthentication.entity.User;
+import com.example.springjwtauthentication.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

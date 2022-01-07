@@ -1,5 +1,6 @@
-package com.example.springjwtauthentication.user;
+package com.example.springjwtauthentication.repository;
 
+import com.example.springjwtauthentication.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

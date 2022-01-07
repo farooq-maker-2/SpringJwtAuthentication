@@ -1,6 +1,6 @@
-package com.example.springjwtauthentication.student;
+package com.example.springjwtauthentication.entity;
 
-import com.example.springjwtauthentication.course.Course;
+import com.example.springjwtauthentication.entity.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,11 +13,11 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "students")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@Table(name = "student")
 @ApiModel("Details of student")
 public class Student{
 

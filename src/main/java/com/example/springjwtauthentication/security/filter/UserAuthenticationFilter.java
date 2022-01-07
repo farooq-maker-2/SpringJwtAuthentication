@@ -1,4 +1,4 @@
-package com.example.springjwtauthentication.filter;
+package com.example.springjwtauthentication.security.filter;
 
 import com.example.springjwtauthentication.security.jwt.JwtHelper;
 import org.springframework.security.authentication.AuthenticationManager;

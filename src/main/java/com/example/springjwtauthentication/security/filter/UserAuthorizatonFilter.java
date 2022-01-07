@@ -1,4 +1,4 @@
-package com.example.springjwtauthentication.filter;
+package com.example.springjwtauthentication.security.filter;
 
 import com.example.springjwtauthentication.security.jwt.JwtHelper;
 import lombok.extern.slf4j.Slf4j;

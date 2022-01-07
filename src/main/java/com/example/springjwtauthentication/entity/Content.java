@@ -1,6 +1,5 @@
-package com.example.springjwtauthentication.content;
+package com.example.springjwtauthentication.entity;
 
-import com.example.springjwtauthentication.course.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,11 +9,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "contents")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class Content {
 
     @Id

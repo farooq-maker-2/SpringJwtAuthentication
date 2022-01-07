@@ -1,7 +1,7 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.user.User;
-import com.example.springjwtauthentication.user.UserRepository;
+import com.example.springjwtauthentication.entity.User;
+import com.example.springjwtauthentication.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

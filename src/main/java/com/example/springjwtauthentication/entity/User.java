@@ -1,4 +1,4 @@
-package com.example.springjwtauthentication.user;
+package com.example.springjwtauthentication.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,11 +8,22 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @ApiModel("Details of user")
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public /*abstract*/ class User {
+/**
+ *@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+ *
+ * Entity inheritance means that we can use polymorphic
+ * queries for retrieving all the subclass entities when
+ * querying for a superclass.Since Hibernate is a
+ * JPA implementation, it contains all of the above as well
+ * as a few Hibernate-specific features related to inheritance.
+ *
+ * */
+
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

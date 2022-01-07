@@ -1,6 +1,5 @@
-package com.example.springjwtauthentication.enrollment;
+package com.example.springjwtauthentication.entity;
 
-import com.example.springjwtauthentication.course.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,6 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "enrollments")
 @Data
 @Builder
 @NoArgsConstructor

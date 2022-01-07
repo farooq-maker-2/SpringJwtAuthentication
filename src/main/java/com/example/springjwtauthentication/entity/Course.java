@@ -1,11 +1,7 @@
 
-package com.example.springjwtauthentication.course;
+package com.example.springjwtauthentication.entity;
 
 
-import com.example.springjwtauthentication.content.Content;
-import com.example.springjwtauthentication.enrollment.Enrollment;
-import com.example.springjwtauthentication.student.Student;
-import com.example.springjwtauthentication.teacher.Teacher;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -15,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-//@Table(name = "course")
+@Table(name = "courses")
 //@Data
 @Setter
 @Getter

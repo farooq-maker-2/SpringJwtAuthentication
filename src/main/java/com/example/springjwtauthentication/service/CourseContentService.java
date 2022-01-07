@@ -1,7 +1,7 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.content.Content;
-import com.example.springjwtauthentication.content.ContentRepository;
+import com.example.springjwtauthentication.entity.Content;
+import com.example.springjwtauthentication.repository.ContentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

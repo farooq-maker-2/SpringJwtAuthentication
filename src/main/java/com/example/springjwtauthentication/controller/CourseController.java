@@ -1,15 +1,15 @@
-package com.example.springjwtauthentication.api;
+package com.example.springjwtauthentication.controller;
 
-import com.example.springjwtauthentication.course.Course;
-import com.example.springjwtauthentication.course.CourseRepository;
+import com.example.springjwtauthentication.entity.Course;
+import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.EnrollmentService;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.student.Student;
-import com.example.springjwtauthentication.teacher.Teacher;
+import com.example.springjwtauthentication.entity.Student;
+import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.user.User;
+import com.example.springjwtauthentication.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

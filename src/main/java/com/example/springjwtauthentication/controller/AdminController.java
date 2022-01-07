@@ -1,4 +1,4 @@
-package com.example.springjwtauthentication.api;
+package com.example.springjwtauthentication.controller;
 
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.RequestMapping;

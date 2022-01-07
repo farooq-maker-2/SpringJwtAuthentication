@@ -1,13 +1,13 @@
-package com.example.springjwtauthentication.api;
+package com.example.springjwtauthentication.controller;
 
-import com.example.springjwtauthentication.content.Content;
-import com.example.springjwtauthentication.course.Course;
+import com.example.springjwtauthentication.entity.Content;
+import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.service.CourseContentService;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.teacher.Teacher;
+import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.user.User;
+import com.example.springjwtauthentication.entity.User;
 import com.google.api.client.util.IOUtils;
 import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
