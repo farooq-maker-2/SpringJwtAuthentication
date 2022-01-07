@@ -1,11 +1,12 @@
 package com.example.springjwtauthentication.api;
 
+import com.example.springjwtauthentication.admin.Admin;
 import com.example.springjwtauthentication.admin.AdminRepository;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.student.Student;
 import com.example.springjwtauthentication.teacher.Teacher;
-import com.example.springjwtauthentication.teacher.api.TeacherService;
+import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.user.User;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +47,10 @@ public class UserController {
             //user.setRole(ApplicationUserRole.TEACHER.name().toLowerCase());
             teacherService.saveTeacher(toTeacher(user));
             saved = true;
-        }/* else if (user.getRole().equalsIgnoreCase("admin")) {
+        } else if (user.getRole().equalsIgnoreCase("admin")) {
             adminRepository.save(toAdmin(user));
             saved = true;
-        }*/
+        }
         if (saved) {
             userService.saveUser(user);
             //JwtHelper.generateJwtCode(request, response, authentication);
@@ -111,16 +112,16 @@ public class UserController {
 
     }
 
-//    private Admin toAdmin(User user) {
-//
-//        Admin admin = new Admin();
-//        admin.setStatus("activated");
-//        admin.setEmail(user.getEmail());
-//        admin.setPassword(user.getPassword());
-//        admin.setFirstName(user.getFirstName());
-//        admin.setLastName(user.getLastName());
-//        return admin;
-//
-//    }
+    private Admin toAdmin(User user) {
+
+        Admin admin = new Admin();
+        admin.setStatus("activated");
+        admin.setEmail(user.getEmail());
+        admin.setPassword(user.getPassword());
+        admin.setFirstName(user.getFirstName());
+        admin.setLastName(user.getLastName());
+        return admin;
+
+    }
 
 }

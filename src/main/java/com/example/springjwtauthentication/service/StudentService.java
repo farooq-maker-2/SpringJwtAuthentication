@@ -6,8 +6,12 @@ import com.example.springjwtauthentication.enrollment.Enrollment;
 import com.example.springjwtauthentication.enrollment.EnrollmentRepository;
 import com.example.springjwtauthentication.student.Student;
 import com.example.springjwtauthentication.student.StudentRepository;
+import com.example.springjwtauthentication.user.User;
+import com.example.springjwtauthentication.user.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +22,9 @@ import java.util.HashSet;
 @Log4j2
 @Transactional
 public class StudentService {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -116,5 +123,9 @@ public class StudentService {
         student.setCourses(new HashSet<>());
         studentRepository.delete(student);
         return true;
+    }
+
+    public Page<User> findAll(PageRequest of) {
+        return userRepository.findAByRoleContaining("student",of);
     }
 }

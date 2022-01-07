@@ -14,15 +14,15 @@ services:
     #    networks:
     #      - common-network
 
-    volumes:
-      # Just specify a path and let the Engine create a volume
-      # - /var/lib/mysql
-      - ./mysqlPersistenceVolume:/var/lib/mysql
+#    volumes:
+#      # Just specify a path and let the Engine create a volume
+#      # - /var/lib/mysql
+#      - ./mysqlPersistenceVolume:/var/lib/mysql
 
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
+#    healthcheck:
+#      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+#      timeout: 20s
+#      retries: 10
 
   minio:
     image: quay.io/minio/minio # #minio/minio
@@ -35,9 +35,9 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
     command: minio server /data
-    volumes:
-      # Just specify a path and let the Engine create a volume
-      - /data
+#    volumes:
+#      # Just specify a path and let the Engine create a volume
+#      - /data
 
   createbuckets:
     image: minio/mc
@@ -45,15 +45,16 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc alias set minioroot http://minio:9000 minioadmin minioadmin;
-      /usr/bin/mc mb minioroot/bucket;
-      /usr/bin/mc policy set public minioroot/bucket;
+      /usr/bin/mc alias set miniobucket http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc mb miniobucket/bucket;
+      /usr/bin/mc policy set public miniobucket/bucket;
       exit 0;"
 
   springBootAppContainer:
     image: spring-boot-app
     ports:
       - "8081:8081"
+
     environment:
       #SPRING_DATASOURCE_URL:jdbc: jdbc:mysql://localhost:3310/jwt_spring_application_docker?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
       SPRING_DATASOURCE_URL:jdbc: jdbc:mysql://composedSqlContainer:3306/jwt_spring_application_docker?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
@@ -68,6 +69,7 @@ services:
     depends_on:
       - composedSqlContainer
       - minio
+      - createbuckets
 
     #command: sh -c './wait-for minio:9000 -- java -jar spring-boot-app.jar'
     entrypoint: [ "/wait-for-it.sh", "composedSqlContainer:3306",  "-t", "120", "--", "java", "-jar", "spring-boot-app.jar" ]
@@ -82,9 +84,9 @@ services:
 
     #restart: on-failure
 
-networks:
-  common-network:
-    driver: bridge
+#networks:
+#  common-network:
+#    driver: bridge
 
 
 

@@ -8,7 +8,7 @@ import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.student.Student;
 import com.example.springjwtauthentication.teacher.Teacher;
-import com.example.springjwtauthentication.teacher.api.TeacherService;
+import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
 
 @RestController
 @RequestMapping("/api")
@@ -119,12 +118,15 @@ public class CourseController {
     }
 
     @DeleteMapping("/courses/{courseId}")
-    public void DeleteCourse(@RequestHeader("AUTHORIZATION") String header,
-                             @PathVariable("courseId") Long courseId) {
+    public String DeleteCourse(@RequestHeader("AUTHORIZATION") String header,
+                               @PathVariable("courseId") Long courseId) {
 
         studentService.deleteEnrollments(courseRepository.findCourseById(courseId));
         enrollmentService.deleteEnrollments(courseId);
-        courseRepository.deleteById(courseId);
+        if (courseRepository.existsById(courseId)) {
+            courseRepository.deleteById(courseId);
+        }
+        return "success";
     }
 
 }

@@ -6,7 +6,7 @@ import com.example.springjwtauthentication.service.CourseContentService;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.teacher.Teacher;
-import com.example.springjwtauthentication.teacher.api.TeacherService;
+import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.user.User;
 import com.google.api.client.util.IOUtils;
 import com.jlefebure.spring.boot.minio.MinioException;

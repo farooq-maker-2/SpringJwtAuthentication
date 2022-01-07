@@ -27,9 +27,9 @@ public class StudentController {
     private UserService userService;
 
     @GetMapping("/students")
-    public Page<Student> listAllStudents(@RequestHeader("AUTHORIZATION") String header
+    public Page<User> listAllStudents(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
-        return studentRepository.findAll(PageRequest.of(page.orElse(0), 5));
+        return studentService.findAll(PageRequest.of(page.orElse(0), 5));
     }
 
     @PostMapping("/students/{studentId}/courses/{courseId}")

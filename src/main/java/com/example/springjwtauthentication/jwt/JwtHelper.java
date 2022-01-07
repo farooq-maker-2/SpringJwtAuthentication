@@ -89,8 +89,11 @@ public class JwtHelper {
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(username, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-                filterChain.doFilter(request, response);
+                try {
+                    filterChain.doFilter(request, response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             } catch (Exception exception) {
                 exceptionHandler(exception, response);

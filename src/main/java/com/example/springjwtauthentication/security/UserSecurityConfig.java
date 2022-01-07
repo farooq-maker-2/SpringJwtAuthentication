@@ -3,6 +3,7 @@ package com.example.springjwtauthentication.security;
 import com.example.springjwtauthentication.filter.UserAuthenticationFilter;
 import com.example.springjwtauthentication.filter.UserAuthorizatonFilter;
 import com.example.springjwtauthentication.service.UserService;
+import com.example.springjwtauthentication.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 
+import javax.servlet.FilterChain;
 import java.util.Arrays;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -29,14 +31,15 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService studentService;
+    @Autowired
+    private final UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(studentService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -80,12 +83,12 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests().
                 antMatchers("/api/students/{studentId}/**").
                 access("@userSecurity.hasUserId(authentication,#studentId)");
-                //access(hasUserId(authentication,studentId));
+        //access(hasUserId(authentication,studentId));
 
-        http.
-                authorizeRequests().
-                antMatchers("/api/teachers/{teacherId}/**").
-                access("@userSecurity.hasUserId(authentication,#teacherId)");
+//        http.
+//                authorizeRequests().
+//                antMatchers("/api/teachers/{teacherId}/**").
+//                access("@userSecurity.hasUserId(authentication,#teacherId)");
 
         http.requestMatchers().antMatchers("/api/**");
         http.requestMatchers().antMatchers("/api/**");
@@ -103,13 +106,18 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
             // do your check(s) here
             //boolean isSameUser = false;
             //User user = (User) authentication.getCredentials();
-            System.out.println("inside security function");
+            //System.out.println("inside security function");
             if (Long.valueOf(authentication.getPrincipal().toString()) == userId) {
+
                 return true;
             } else {
-                return false;
+                User user = userService.findUserById(Long.valueOf(authentication.getPrincipal().toString()));
+                if (user.getRole().equals("admin")) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-
         }
     }
 

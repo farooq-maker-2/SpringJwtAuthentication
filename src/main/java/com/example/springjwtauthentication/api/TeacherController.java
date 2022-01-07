@@ -2,7 +2,7 @@ package com.example.springjwtauthentication.api;
 
 import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.teacher.Teacher;
-import com.example.springjwtauthentication.teacher.api.TeacherService;
+import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,16 +39,16 @@ public class TeacherController {
     }
 
     @GetMapping("/teachers")
-    public Page<Teacher> listAllTeachers(@RequestHeader("AUTHORIZATION") String header
+    public Page<User> listAllTeachers(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
-        return teacherService.findAll(PageRequest.of(page.orElse(0), 2));
+        return teacherService.findAll(PageRequest.of(page.orElse(0), 5));
     }
 
     @GetMapping("/teachers/{name}")
     public List<Teacher> listTeachersByName(@RequestHeader("AUTHORIZATION") String header,
                                             @PathVariable("name") String teacherName,
                                             @RequestParam Optional<Integer> page) {
-        return teacherService.findTeachersByName(PageRequest.of(page.orElse(0), 2), teacherName);
+        return teacherService.findTeachersByName(PageRequest.of(page.orElse(0), 5), teacherName);
     }
 
 }

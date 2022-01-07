@@ -1,7 +1,9 @@
-package com.example.springjwtauthentication.teacher.api;
+package com.example.springjwtauthentication.service;
 
 import com.example.springjwtauthentication.teacher.Teacher;
 import com.example.springjwtauthentication.teacher.TeacherRepository;
+import com.example.springjwtauthentication.user.User;
+import com.example.springjwtauthentication.user.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,9 @@ public class TeacherService/* implements UserDetailsService*/ {
 
     @Autowired
     private TeacherRepository teacherRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public Teacher saveTeacher(Teacher teacher) {
         return teacherRepository.save(teacher);
@@ -49,8 +54,8 @@ public class TeacherService/* implements UserDetailsService*/ {
         return teacherRepository.findTeacherById(teacherId);
     }
 
-    public Page<Teacher> findAll(PageRequest of) {
-        return teacherRepository.findAll(of);
+    public Page<User> findAll(PageRequest of) {
+        return userRepository.findAByRoleContaining("teacher",of);
     }
 
     public List<Teacher> findTeachersByName(PageRequest pageRequest,String name) {
