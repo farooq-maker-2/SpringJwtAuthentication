@@ -19,7 +19,8 @@ To deploy this project please follow instructions below.
 
 - install Docker Desktop
 - install maven
-  Then run the following commands,
+  
+ Then run the following commands,
 
 ```bash
     mvn package -DskipTests
