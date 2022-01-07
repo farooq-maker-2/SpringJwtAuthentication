@@ -8,31 +8,14 @@
 # User-specific stuff
 .idea
 
-
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
  *.iml
 
-
-
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-### Java ###
-# Compiled class file
-*.class
-
-# Log file
-*.log
-
-
 HELP.md
+
 ### Maven ###
 target/
 pom.xml.tag
