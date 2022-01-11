@@ -43,7 +43,7 @@ public class Content {
 //    private Date created;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "course_id"/*, nullable=false*/)
     @ApiModelProperty(readOnly = true)
     private Course course;

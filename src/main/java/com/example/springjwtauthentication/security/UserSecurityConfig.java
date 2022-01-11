@@ -1,9 +1,9 @@
 package com.example.springjwtauthentication.security;
 
+import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.security.filter.UserAuthenticationFilter;
 import com.example.springjwtauthentication.security.filter.UserAuthorizatonFilter;
 import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -110,7 +110,7 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 return true;
             } else {
-                User user = userService.findUserById(Long.valueOf(authentication.getPrincipal().toString()));
+                UserModel user = userService.findUserById(Long.valueOf(authentication.getPrincipal().toString()));
                 if (user.getRole().equals("admin")) {
                     return true;
                 } else {

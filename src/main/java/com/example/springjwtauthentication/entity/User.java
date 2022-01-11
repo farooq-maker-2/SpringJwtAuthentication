@@ -2,8 +2,11 @@ package com.example.springjwtauthentication.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.example.springjwtauthentication.model.UserModel;
 
 import javax.persistence.*;
 
@@ -11,6 +14,8 @@ import javax.persistence.*;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ApiModel("Details of user")
 /**
  *@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

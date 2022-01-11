@@ -17,6 +17,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @ToString
 public class Course {
 
@@ -65,7 +66,7 @@ public class Course {
     private Teacher teacher;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "course_content_id"/*,nullable=false*/)
     @ApiModelProperty(readOnly = true)
     private List<Content> courseContents;

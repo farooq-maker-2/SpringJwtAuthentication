@@ -1,22 +1,32 @@
 package com.example.springjwtauthentication.service;
 
 import com.example.springjwtauthentication.entity.Course;
+import com.example.springjwtauthentication.model.*;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.entity.Enrollment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
 
     @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
+    private CourseContentService contentService;
+
+    @Autowired
     private CourseRepository courseRepository;
 
-    public Course saveCourse(Course course) {
-        return courseRepository.save(course);
+    public Course saveCourse(CourseModel course) {
+        return courseRepository.save(this.toEntity(course));
     }
 
     public List<Course> findAllTimeTopTen() {
@@ -43,8 +53,35 @@ public class CourseService {
         return courseRepository.findFirst10ByOrderByTrendingEnrollmentsDesc();
     }
 
-    public Course findCourseById(Long courseId) {
-        return courseRepository.findCourseById(courseId);
+    public CourseModel findCourseById(Long courseId) {
+        Course course = courseRepository.findCourseById(courseId);
+        return this.toModel(course);
     }
 
+    public CourseModel toModel(Course course) {
+        return CourseModel.builder()
+                .id(course.getId())
+                .courseName(course.getCourseName())
+                .description(course.getDescription())
+                .level(course.getLevel())
+                .allTimeEnrollments(course.getAllTimeEnrollments())
+                .trendingEnrollments(course.getTrendingEnrollments())
+                /*.students((course.getStudents() != null) ?
+                        course.getStudents().stream().map(student -> studentService.toModel(student)).collect(Collectors.toSet()) : new HashSet<>())
+                .teacher(teacherService.toModel(course.getTeacher()))
+                .courseContents((course.getCourseContents() != null) ?
+                        course.getCourseContents().stream().map(content -> contentService.toModel(content)).collect(Collectors.toList()) : new ArrayList<>())*/
+                .build();
+    }
+
+    public Course toEntity(CourseModel course) {
+        return Course.builder()
+                .id(course.getId())
+                .courseName(course.getCourseName())
+                .description(course.getDescription())
+                .level(course.getLevel())
+                .allTimeEnrollments(course.getAllTimeEnrollments())
+                .trendingEnrollments(course.getTrendingEnrollments())
+                .build();
+    }
 }

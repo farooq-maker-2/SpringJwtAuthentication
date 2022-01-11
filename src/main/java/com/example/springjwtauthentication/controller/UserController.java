@@ -1,6 +1,9 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.entity.Admin;
+import com.example.springjwtauthentication.model.StudentModel;
+import com.example.springjwtauthentication.model.TeacherModel;
+import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.AdminRepository;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
@@ -41,22 +44,21 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRole().equalsIgnoreCase("student")) {
             //user.setRole(ApplicationUserRole.STUDENT.name().toLowerCase());
-            studentService.saveStudent(toStudent(user));
+            studentService.saveStudent(studentService.toModel(toStudent(user)));
             saved = true;
         } else if (user.getRole().equalsIgnoreCase("teacher")) {
             //user.setRole(ApplicationUserRole.TEACHER.name().toLowerCase());
-            teacherService.saveTeacher(toTeacher(user));
+            teacherService.saveTeacher(teacherService.toModel(toTeacher(user)));
             saved = true;
         } else if (user.getRole().equalsIgnoreCase("admin")) {
             adminRepository.save(toAdmin(user));
             saved = true;
         }
         if (saved) {
-            userService.saveUser(user);
-            //JwtHelper.generateJwtCode(request, response, authentication);
-            return "User register successfully...!!!";
+            userService.saveUser(userService.toModel(user));
+            return "success";
         }
-        return "";
+        return "failure";
     }
 
     @PostMapping("/users/login")
@@ -70,14 +72,14 @@ public class UserController {
                                  @PathVariable("userId") Long userId,
                                  @PathVariable("userId") String role) {
 
-        User user = userService.findUserById(userId);
+        UserModel user = userService.findUserById(userId);
         boolean success = false;
         if (user.getRole().equalsIgnoreCase("student")) {
-            Student student = studentService.findStudentByEmail(user.getEmail());
+            StudentModel student = studentService.findStudentByEmail(user.getEmail());
             success = studentService.optoutAndDeleteStudent(student);
 
         } else if (user.getRole().equalsIgnoreCase("teacher")) {
-            Teacher teacher = teacherService.findTeacherByEmail(user.getEmail());
+            TeacherModel teacher = teacherService.findTeacherByEmail(user.getEmail());
             user.setStatus("deactivated");
             teacher.setStatus("deactivated");
             teacherService.saveTeacher(teacher);

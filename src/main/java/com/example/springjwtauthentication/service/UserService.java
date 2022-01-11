@@ -1,6 +1,7 @@
 package com.example.springjwtauthentication.service;
 
 import com.example.springjwtauthentication.entity.User;
+import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,10 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public User saveUser(UserModel user) {
+        return userRepository.save(this.toEntity(user));
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -46,16 +48,41 @@ public class UserService implements UserDetailsService {
 //        return userRepository.findUserByEmailAndPassword(email, password);
 //    }
 
-    public User findUserById(Long userId) throws UsernameNotFoundException {
-        return userRepository.findUserById(userId);
+    public UserModel findUserById(Long userId) throws UsernameNotFoundException {
+        User user = userRepository.findUserById(userId);
+        return this.toModel(user);
     }
 
-    public void deleteUser(User user) {
-        userRepository.delete(user);
+    public void deleteUser(UserModel user) {
+        userRepository.delete(this.toEntity(user));
     }
 
     public User findUserByEmail(String email) {
 
         return userRepository.findUserByEmail(email);
+    }
+
+    public UserModel toModel(User user) {
+        return UserModel.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .build();
+    }
+
+    private User toEntity(UserModel user) {
+        return User.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .build();
     }
 }

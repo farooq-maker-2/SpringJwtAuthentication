@@ -2,12 +2,17 @@ package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.entity.Content;
 import com.example.springjwtauthentication.entity.Course;
+import com.example.springjwtauthentication.entity.Teacher;
+import com.example.springjwtauthentication.model.ContentModel;
+import com.example.springjwtauthentication.model.CourseModel;
+import com.example.springjwtauthentication.model.UserModel;
+import com.example.springjwtauthentication.repository.ContentRepository;
+import com.example.springjwtauthentication.repository.CourseRepository;
+import com.example.springjwtauthentication.repository.TeacherRepository;
 import com.example.springjwtauthentication.service.CourseContentService;
 import com.example.springjwtauthentication.service.CourseService;
-import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.entity.User;
+import com.example.springjwtauthentication.service.UserService;
 import com.google.api.client.util.IOUtils;
 import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
@@ -43,6 +48,15 @@ public class CourseContentController {
     @Autowired
     private CourseContentService courseContentService;
 
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private ContentRepository contentRepository;
+
+    @Autowired
+    private TeacherRepository teacherRepository;
+
     @PostMapping(value = "/teachers/{teacherId}/courses/{courseId}/contents"/*,
             consumes = {"multipart/mixed", "multipart/form-data"}*/)
     public String uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
@@ -54,12 +68,12 @@ public class CourseContentController {
                                       //@RequestPart(value = "file") MultipartFile file
             /*@RequestBody MultipartFile file*/) {
 
-        User user = userService.findUserById(teacherId);
-        Teacher teacher = teacherService.findTeacherByEmail(user.getEmail());
+        UserModel user = userService.findUserById(teacherId);
+        Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
+        Course course = courseRepository.findCourseById(courseId);
 
-        Course course = courseService.findCourseById(courseId);
         if (teacher.getCourses().contains(course)) {
-            Content content = Content
+            ContentModel content = ContentModel
                     .builder()
                     .fileName(file.getOriginalFilename())
                     .contentType(file.getContentType())
@@ -69,9 +83,13 @@ public class CourseContentController {
             Path path = Path.of(course.getCourseName() + "/" + file.getOriginalFilename());
             try {
                 minioService.upload(path, file.getInputStream(), file.getContentType());
-                course.getCourseContents().add(content);
-                courseContentService.saveCourseContent(content);
-                courseService.saveCourse(course);
+
+                Content contentEntity = courseContentService.toEntity(content);
+                contentEntity.setCourse(course);
+                courseContentService.saveCourseContent(contentEntity);
+                course.getCourseContents().add(contentEntity);
+                courseRepository.save(course);
+
                 return "success";
             } catch (MinioException e) {
                 throw new IllegalStateException("The file cannot be upload on the internal storage. Please retry later", e);
@@ -79,35 +97,16 @@ public class CourseContentController {
                 throw new IllegalStateException("The file cannot be read", e);
             }
 
-            /**
-             * Save File conetnt to db
-             *
-             * */
-//            Content content = new Content();
-//            content.setFileName(file.getOriginalFilename());
-//            content.setDescription(String.valueOf(file.getSize()));
-//            content.setContentType(file.getContentType());
-//            try {
-//                content.setContent(file.getBytes());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            course.getCourseContents().add(content);
-//            courseContentService.saveCourseContent(content);
-//            courseService.saveCourse(course);
-//            return content;
-
-
         } else {
             return "upload filed";
         }
     }
 
     @GetMapping("/courses/{courseId}/contents")
-    public List<Content> getAllCourseContentsList(@PathVariable("courseId") Long courseId, @RequestHeader("AUTHORIZATION") String header) {
+    public List<ContentModel> getAllCourseContentsList(@PathVariable("courseId") Long courseId, @RequestHeader("AUTHORIZATION") String header) {
 
-        Course course = courseService.findCourseById(courseId);
-        return course.getCourseContents();
+        CourseModel course = courseService.findCourseById(courseId);
+        return courseContentService.getCourseContents(course.getId());
     }
 
 
@@ -117,7 +116,7 @@ public class CourseContentController {
                                                                   @RequestHeader("AUTHORIZATION") String header,
                                                                   HttpServletResponse response) {
 
-        Course course = courseService.findCourseById(courseId);
+        CourseModel course = courseService.findCourseById(courseId);
         InputStream inputStream = null;
         try {
             inputStream = minioService.get(Path.of(course.getCourseName() + "/" + fileName));

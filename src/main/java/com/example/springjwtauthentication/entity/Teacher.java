@@ -1,5 +1,6 @@
 package com.example.springjwtauthentication.entity;
 
+import com.example.springjwtauthentication.model.TeacherModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

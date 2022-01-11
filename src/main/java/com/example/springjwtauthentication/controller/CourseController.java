@@ -1,21 +1,22 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.entity.Course;
-import com.example.springjwtauthentication.repository.CourseRepository;
-import com.example.springjwtauthentication.service.CourseService;
-import com.example.springjwtauthentication.service.EnrollmentService;
-import com.example.springjwtauthentication.service.StudentService;
-import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.entity.Student;
 import com.example.springjwtauthentication.entity.Teacher;
-import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.entity.User;
+import com.example.springjwtauthentication.model.CourseModel;
+import com.example.springjwtauthentication.model.TeacherModel;
+import com.example.springjwtauthentication.model.UserModel;
+import com.example.springjwtauthentication.repository.CourseRepository;
+import com.example.springjwtauthentication.repository.StudentRepository;
+import com.example.springjwtauthentication.repository.TeacherRepository;
+import com.example.springjwtauthentication.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -24,9 +25,6 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
-
-    @Autowired
-    private CourseRepository courseRepository;
 
     @Autowired
     private TeacherService teacherService;
@@ -40,79 +38,65 @@ public class CourseController {
     @Autowired
     private EnrollmentService enrollmentService;
 
+    @Autowired
+    private TeacherRepository teacherRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
+
     @PostMapping("/teachers/{teacherId}/courses")
     public Course addCourse(
             @PathVariable("teacherId") Long teacherId,
             @RequestHeader("AUTHORIZATION") String header,
-            @RequestBody Course course/*,
-            @RequestParam("username") String email*/) {
+            @RequestBody Course course) {
 
-        User user = userService.findUserById(teacherId);
-        Teacher teacher = teacherService.findTeacherByEmail(user.getEmail());
+        UserModel user = userService.findUserById(teacherId);
+        Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
         if (teacher != null) {
             course.setTeacher(teacher);
             courseRepository.save(course);
-            teacher.getCourses().add(course);
-            teacherService.saveTeacher(teacher);
             return course;
         } else {
             return null;
         }
     }
 
-    @GetMapping("/students/{studentId}/courses")
-    public Set<Course> getCoursesOfStudent(@RequestHeader("AUTHORIZATION") String header,
-                                           @PathVariable("studentId") Long studentId,
-                                           @RequestParam Optional<Integer> page) {
-
-        User user = userService.findUserById(studentId);
-        Student student = studentService.findStudentByEmail(user.getEmail());
-        Set<Course> courses = studentService.findStudentById(student.getId()).getCourses();
-
-        int pageSize = 5;
-        int fromIndex = page.get() * pageSize;
-        if (courses == null || courses.size() <= fromIndex) {
-            return Collections.emptySet();
-        }
-        List<Course> coursesList = new ArrayList<>(courses);
-        // toIndex exclusive
-        return new HashSet<>(coursesList.subList(fromIndex, Math.min(fromIndex + pageSize, coursesList.size())));
-
-    }
-
     @GetMapping("/courses")
-    public Page<Course> listAllCourses(@RequestHeader("AUTHORIZATION") String header
+    public Page<CourseModel> listAllCourses(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
 
-        return courseRepository.findAll(PageRequest.of(page.orElse(0), 5));
+        Page<Course> courses = courseRepository.findAll(PageRequest.of(page.orElse(0), 5));
+        List<CourseModel> courseModels = courses.stream().map(course -> courseService.toModel(course)).collect(Collectors.toList());
+        return new PageImpl<>(courseModels);
     }
 
     @GetMapping("/courses/all_time_top_ten")
-    public List<Course> listAllTimeTopTenCourses(@RequestHeader("AUTHORIZATION") String header/*, @RequestParam("username") String username*/) {
-        return courseService.findAllTimeTopTen();
+    public List<CourseModel> listAllTimeTopTenCourses(@RequestHeader("AUTHORIZATION") String header) {
+        return courseService.findAllTimeTopTen().stream().map(course -> courseService.toModel(course)).collect(Collectors.toList());
     }
 
     @GetMapping("/courses/top_trending")
-    public List<Course> listTopTenTrendingCourses(@RequestHeader("AUTHORIZATION") String header/*, @RequestParam("username") String username*/) {
-        return courseService.findTopTenTrendingCourses();
+    public List<CourseModel> listTopTenTrendingCourses(@RequestHeader("AUTHORIZATION") String header) {
+        return courseService.findTopTenTrendingCourses().stream().map(course -> courseService.toModel(course)).collect(Collectors.toList());
     }
 
     @GetMapping("/teachers/{teacherId}/courses")
-    public Set<Course> getCoursesOfTeacher(@RequestHeader("AUTHORIZATION") String header,
-                                           @PathVariable("teacherId") Long teacherId,
-                                           @RequestParam Optional<Integer> page
+    public Set<CourseModel> getCoursesOfTeacher(@RequestHeader("AUTHORIZATION") String header,
+                                                @PathVariable("teacherId") Long teacherId,
+                                                @RequestParam Optional<Integer> page
     ) {
 
-        User user = userService.findUserById(teacherId);
-        Teacher teacher = teacherService.findTeacherByEmail(user.getEmail());
-        Set<Course> courses = teacher.getCourses();
-
+        UserModel user = userService.findUserById(teacherId);
+        TeacherModel teacher = teacherService.findTeacherByEmail(user.getEmail());
+        Set<Course> coursesOfTeacher = teacherRepository.findTeacherById(teacher.getId()).getCourses();
+        Set<Course> courses = coursesOfTeacher;
+        Set<CourseModel> courseModels = courses.stream().map(course -> courseService.toModel(course)).collect(Collectors.toSet());
         int pageSize = 5;
         int fromIndex = page.get() * pageSize;
         if (courses == null || courses.size() <= fromIndex) {
             return Collections.emptySet();
         }
-        List<Course> coursesList = new ArrayList<>(courses);
+        List<CourseModel> coursesList = new ArrayList<>(courseModels);
         // toIndex exclusive
         return new HashSet<>(coursesList.subList(fromIndex, Math.min(fromIndex + pageSize, coursesList.size())));
     }
@@ -121,7 +105,7 @@ public class CourseController {
     public String DeleteCourse(@RequestHeader("AUTHORIZATION") String header,
                                @PathVariable("courseId") Long courseId) {
 
-        studentService.deleteEnrollments(courseRepository.findCourseById(courseId));
+        studentService.deleteEnrollments(courseId);
         enrollmentService.deleteEnrollments(courseId);
         if (courseRepository.existsById(courseId)) {
             courseRepository.deleteById(courseId);
