@@ -1,17 +1,21 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.entity.Admin;
+import com.example.springjwtauthentication.entity.Student;
+import com.example.springjwtauthentication.entity.Teacher;
+import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.model.StudentModel;
 import com.example.springjwtauthentication.model.TeacherModel;
 import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.AdminRepository;
 import com.example.springjwtauthentication.service.StudentService;
-import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.entity.Student;
-import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.entity.User;
-import io.swagger.annotations.ApiOperation;
+import com.example.springjwtauthentication.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +40,12 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @ApiOperation(value = "register user", response = User.class)
+    //@ApiOperation(value = "register user", response = User.class)
+    @Operation(summary = "this api is to register the user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @PostMapping("/users/register")
     public String registerUser(@RequestBody User user) {
 
@@ -61,12 +70,22 @@ public class UserController {
         return "failure";
     }
 
+    @Operation(summary = "this api is to login user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @PostMapping("/users/login")
-    public User UserLogin(@RequestParam String email, @RequestParam String password) {
+    public UserModel UserLogin(@RequestParam String email, @RequestParam String password) {
         //all authentication is handled in AuthenticationFilter
         return userService.findUserByEmail(email);
     }
 
+    @Operation(summary = "this api is to deactivate user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @DeleteMapping("/users/{userId}/deactivate/{role}")
     public String deactivateUser(@RequestHeader("AUTHORIZATION") String header,
                                  @PathVariable("userId") Long userId,

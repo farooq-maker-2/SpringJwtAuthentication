@@ -4,14 +4,18 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.springjwtauthentication.model.UserModel;
+import com.example.springjwtauthentication.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.client.ResourceAccessException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -100,6 +104,26 @@ public class JwtHelper {
             }
         } else {
             exceptionHandler(new Exception(), response);
+        }
+
+    }
+
+    public static Long getJwtUser(String token) {
+
+        if (token != null && token.startsWith("Bearer ")) {
+
+            try {
+                String jwt_token = token.substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(jwt_token);
+                return Long.valueOf(decodedJWT.getSubject());
+
+            } catch (Exception exception) {
+                throw new ResourceAccessException("resource not allowed");
+            }
+        } else {
+            throw new ResourceAccessException("resource not allowed");
         }
 
     }

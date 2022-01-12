@@ -11,6 +11,10 @@ import com.example.springjwtauthentication.repository.UserRepository;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -41,6 +45,11 @@ public class StudentController {
     @Autowired
     private UserRepository userRepository;
 
+    @Operation(summary = "this api is to list all courses")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/students")
     public Page<StudentModel> listAllStudents(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
@@ -49,6 +58,11 @@ public class StudentController {
         return new PageImpl<>(studentModels);
     }
 
+    @Operation(summary = "this api is to enroll student to a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @PostMapping("/students/{studentId}/courses/{courseId}")
     public String enrollStudentForCourse(@RequestHeader("AUTHORIZATION") String header,
                                           @PathVariable("studentId") Long studentId,
@@ -59,6 +73,11 @@ public class StudentController {
         return studentService.enrollStudentForCourse(student, courseId);
     }
 
+    @Operation(summary = "this api is to opt out student from a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @PutMapping("/students/{studentId}/courses/{courseId}")
     public String optOutStudentFormCourse(@RequestHeader("AUTHORIZATION") String header,
                                            @PathVariable("studentId") Long studentId,
@@ -69,6 +88,11 @@ public class StudentController {
         return studentService.optoutStudentFromCourse(student, courseId);
     }
 
+    @Operation(summary = "this api is to get all courses of student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/students/{studentId}/courses")
     public Set<CourseModel> getCoursesOfStudent(@RequestHeader("AUTHORIZATION") String header,
                                                 @PathVariable("studentId") Long studentId,

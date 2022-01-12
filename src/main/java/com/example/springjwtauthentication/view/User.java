@@ -1,12 +1,12 @@
 package com.example.springjwtauthentication.view;
 
-import io.swagger.annotations.ApiModel;
+//import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@ApiModel("Details of user")
+//@ApiModel("Details of user")
 public class User {
 
     private Long id;

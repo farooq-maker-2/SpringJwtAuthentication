@@ -22,10 +22,25 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <!-- Swagger dependency -->
+        <!--        <dependency>-->
+        <!--            <groupId>io.springfox</groupId>-->
+        <!--            <artifactId>springfox-boot-starter</artifactId>-->
+        <!--            <version>3.0.0</version>-->
+        <!--        </dependency>-->
+        <!-- For the integration between spring-boot and swagger-ui,
+         add the library to the list of your project dependencies
+         (No additional configuration is needed) -->
+        <!--        we'll just add a couple of Maven dependencies –
+        springdoc-openapi-data-rest for generating the JSON, and springdoc-openapi-ui for rendering the UI.-->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-data-rest</artifactId>
+            <version>1.6.4</version>
         </dependency>
         <!--        &lt;!&ndash; https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 &ndash;&gt;-->
         <!--        <dependency>-->
@@ -67,7 +82,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

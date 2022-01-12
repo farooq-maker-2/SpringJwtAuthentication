@@ -57,9 +57,9 @@ public class UserService implements UserDetailsService {
         userRepository.delete(this.toEntity(user));
     }
 
-    public User findUserByEmail(String email) {
+    public UserModel findUserByEmail(String email) {
 
-        return userRepository.findUserByEmail(email);
+        return this.toModel(userRepository.findUserByEmail(email));
     }
 
     public UserModel toModel(User user) {

@@ -3,19 +3,22 @@ package com.example.springjwtauthentication.controller;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.model.CourseModel;
-import com.example.springjwtauthentication.model.TeacherModel;
 import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.CourseRepository;
-import com.example.springjwtauthentication.repository.StudentRepository;
 import com.example.springjwtauthentication.repository.TeacherRepository;
 import com.example.springjwtauthentication.service.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,6 +47,11 @@ public class CourseController {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Operation(summary = "this api is to add a new course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @PostMapping("/teachers/{teacherId}/courses")
     public Course addCourse(
             @PathVariable("teacherId") Long teacherId,
@@ -61,6 +69,11 @@ public class CourseController {
         }
     }
 
+    @Operation(summary = "this api is to list all courses")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/courses")
     public Page<CourseModel> listAllCourses(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
@@ -70,37 +83,31 @@ public class CourseController {
         return new PageImpl<>(courseModels);
     }
 
+    @Operation(summary = "this api is to list top 10 courses of all time")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/courses/all_time_top_ten")
     public List<CourseModel> listAllTimeTopTenCourses(@RequestHeader("AUTHORIZATION") String header) {
         return courseService.findAllTimeTopTen().stream().map(course -> courseService.toModel(course)).collect(Collectors.toList());
     }
 
+    @Operation(summary = "this api is to list top 10 trending courses")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/courses/top_trending")
     public List<CourseModel> listTopTenTrendingCourses(@RequestHeader("AUTHORIZATION") String header) {
         return courseService.findTopTenTrendingCourses().stream().map(course -> courseService.toModel(course)).collect(Collectors.toList());
     }
 
-    @GetMapping("/teachers/{teacherId}/courses")
-    public Set<CourseModel> getCoursesOfTeacher(@RequestHeader("AUTHORIZATION") String header,
-                                                @PathVariable("teacherId") Long teacherId,
-                                                @RequestParam Optional<Integer> page
-    ) {
-
-        UserModel user = userService.findUserById(teacherId);
-        TeacherModel teacher = teacherService.findTeacherByEmail(user.getEmail());
-        Set<Course> coursesOfTeacher = teacherRepository.findTeacherById(teacher.getId()).getCourses();
-        Set<Course> courses = coursesOfTeacher;
-        Set<CourseModel> courseModels = courses.stream().map(course -> courseService.toModel(course)).collect(Collectors.toSet());
-        int pageSize = 5;
-        int fromIndex = page.get() * pageSize;
-        if (courses == null || courses.size() <= fromIndex) {
-            return Collections.emptySet();
-        }
-        List<CourseModel> coursesList = new ArrayList<>(courseModels);
-        // toIndex exclusive
-        return new HashSet<>(coursesList.subList(fromIndex, Math.min(fromIndex + pageSize, coursesList.size())));
-    }
-
+    @Operation(summary = "this api is to delete a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @DeleteMapping("/courses/{courseId}")
     public String DeleteCourse(@RequestHeader("AUTHORIZATION") String header,
                                @PathVariable("courseId") Long courseId) {

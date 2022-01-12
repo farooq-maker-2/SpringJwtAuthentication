@@ -1,14 +1,11 @@
 package com.example.springjwtauthentication.controller;
 
-import com.example.springjwtauthentication.entity.Content;
-import com.example.springjwtauthentication.entity.Course;
-import com.example.springjwtauthentication.entity.Teacher;
+import com.example.springjwtauthentication.entity.*;
 import com.example.springjwtauthentication.model.ContentModel;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.model.UserModel;
-import com.example.springjwtauthentication.repository.ContentRepository;
-import com.example.springjwtauthentication.repository.CourseRepository;
-import com.example.springjwtauthentication.repository.TeacherRepository;
+import com.example.springjwtauthentication.repository.*;
+import com.example.springjwtauthentication.security.jwt.JwtHelper;
 import com.example.springjwtauthentication.service.CourseContentService;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.TeacherService;
@@ -16,9 +13,14 @@ import com.example.springjwtauthentication.service.UserService;
 import com.google.api.client.util.IOUtils;
 import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +59,17 @@ public class CourseContentController {
     @Autowired
     private TeacherRepository teacherRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Operation(summary = "this api is to upload course content file")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @io.swagger.v3.oas.annotations.media.Content)})
     @PostMapping(value = "/teachers/{teacherId}/courses/{courseId}/contents"/*,
             consumes = {"multipart/mixed", "multipart/form-data"}*/)
     public String uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
@@ -102,6 +115,11 @@ public class CourseContentController {
         }
     }
 
+    @Operation(summary = "this api is to get list of all course content files")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "failure", content = @io.swagger.v3.oas.annotations.media.Content)})
     @GetMapping("/courses/{courseId}/contents")
     public List<ContentModel> getAllCourseContentsList(@PathVariable("courseId") Long courseId, @RequestHeader("AUTHORIZATION") String header) {
 
@@ -109,37 +127,54 @@ public class CourseContentController {
         return courseContentService.getCourseContents(course.getId());
     }
 
-
+    @Operation(summary = "this api is to doenload a course content file")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")})})
     @GetMapping("/courses/{courseId}/contents/{fileName}")
     public /*ResponseEntity<Resource>*/void downloadSingleContent(@PathVariable("courseId") Long courseId,
                                                                   @PathVariable("fileName") String fileName,
                                                                   @RequestHeader("AUTHORIZATION") String header,
                                                                   HttpServletResponse response) {
 
-        CourseModel course = courseService.findCourseById(courseId);
-        InputStream inputStream = null;
-        try {
-            inputStream = minioService.get(Path.of(course.getCourseName() + "/" + fileName));
-            InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+        if (isAllowed(header, courseId)) {
+            InputStream inputStream = null;
+            try {
+                Course course = courseRepository.findCourseById(courseId);
+                inputStream = minioService.get(Path.of(course.getCourseName() + "/" + fileName));
+                InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
 
-            // Set the content type and attachment header.
-            response.addHeader("Content-disposition", "attachment;filename=" + fileName);
-            response.setContentType(URLConnection.guessContentTypeFromName(fileName));
-
-            // Copy the stream to the response's output stream.
-            IOUtils.copy(inputStream, response.getOutputStream());
-            response.flushBuffer();
-        } catch (Exception e) {
-            e.printStackTrace();
+                // Set the content type and attachment header.
+                response.addHeader("Content-disposition", "attachment;filename=" + fileName);
+                response.setContentType(URLConnection.guessContentTypeFromName(fileName));
+                // Copy the stream to the response's output stream.
+                IOUtils.copy(inputStream, response.getOutputStream());
+                response.flushBuffer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new AccessDeniedException("403 returned");
         }
-//
-//        Content content = courseContentService.getSingleContent(contentId);
-//
-//        return ResponseEntity.ok().
-//                contentType(MediaType.parseMediaType(content.getContentType())).
-//                header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename = " + content.getFileName()).
-//                body(new ByteArrayResource(content.getContent()));
     }
 
-
+    private boolean isAllowed(String header, Long courseId) {
+        boolean allowed = false;
+        User user = userRepository.findUserById(JwtHelper.getJwtUser(header));
+        Course course = courseRepository.findCourseById(courseId);
+        if (user.getRole().equals("student")) {
+            Student student = studentRepository.findStudentByEmail(user.getEmail());
+            if (student.getCourses().contains(course)) {
+                allowed = true;
+            }
+        } else if (user.getRole().equals("teacher")) {
+            Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
+            if (teacher.getCourses().contains(course)) {
+                allowed = true;
+            }
+        } else if (user.getRole().equals("admin")) {
+            allowed = true;
+        }
+        return allowed;
+    }
 }
