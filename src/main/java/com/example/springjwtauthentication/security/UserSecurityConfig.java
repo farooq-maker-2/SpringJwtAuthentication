@@ -38,7 +38,7 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+         auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -75,6 +75,7 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 //.antMatchers("/api/admins/**").hasRole("ADMIN")
                 .antMatchers("/api/users/login/**").permitAll()
+                .antMatchers("api/courses").permitAll()
                 .antMatchers("/api/users/register").permitAll()
         /*.antMatchers("/api/courses/**").hasRole(ApplicationUserRole.STUDENT.name().toLowerCase())*/;
 

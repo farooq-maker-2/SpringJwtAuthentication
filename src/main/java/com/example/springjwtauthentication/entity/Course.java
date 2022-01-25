@@ -30,17 +30,17 @@ public class Course {
     @Schema(accessMode = READ_ONLY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents course name", name = "courseName", required = true, example = "database")
     @Schema(example = "database")
     private String courseName;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents course description", name = "courseName", required = true, example = "database")
-    @Schema(example = "database")
+    @Schema(example = "description")
     private String description;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents course difficulty level", name = "level", required = true, example = "500")
     @Schema(example = "500")
     private String level;

@@ -125,7 +125,6 @@ public class JwtHelper {
         } else {
             throw new ResourceAccessException("resource not allowed");
         }
-
     }
 
     public static void exceptionHandler(Exception exception, HttpServletResponse response) {

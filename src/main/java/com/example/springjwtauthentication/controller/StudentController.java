@@ -11,6 +11,7 @@ import com.example.springjwtauthentication.repository.UserRepository;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
+import com.example.springjwtauthentication.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -51,11 +51,16 @@ public class StudentController {
                     @Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/students")
-    public Page<StudentModel> listAllStudents(@RequestHeader("AUTHORIZATION") String header
+    public Page<UserView> listAllStudents(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
         Page<User> students = userRepository.findAllByRole("student",PageRequest.of(page.orElse(0), 5));
         List<StudentModel> studentModels = students.stream().map(student -> studentService.toModel(student)).collect(Collectors.toList());
-        return new PageImpl<>(studentModels);
+        List<UserView> userViews = new ArrayList<>();
+        studentModels.stream().forEach(studentModel -> {
+            userViews.add(UserView.toStudentView(studentModel));
+        });
+
+        return new PageImpl<>(userViews);
     }
 
     @Operation(summary = "this api is to enroll student to a course")

@@ -27,7 +27,7 @@ public class Enrollment {
     @Schema(accessMode = READ_ONLY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents enrollment date, and it is auto generated", name = "enrollmentDate", required = true, example = "1")
     @Schema(example = "23-09-1997")
     private Date enrollmentDate;

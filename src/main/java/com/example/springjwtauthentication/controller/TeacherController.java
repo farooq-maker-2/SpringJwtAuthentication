@@ -8,6 +8,7 @@ import com.example.springjwtauthentication.repository.TeacherRepository;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.service.UserService;
+import com.example.springjwtauthentication.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -47,9 +48,7 @@ public class TeacherController {
             teacherService.saveTeacher(teacher);
             return "success";
         } else {
-            //ApiError apiError = new ApiError(NOT_FOUND);
-            //apiError.setMessage(ex.getMessage());
-            return null;//buildResponseEntity(apiError);
+            return null;
         }
     }
 
@@ -59,7 +58,7 @@ public class TeacherController {
                     @Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/teachers")
-    public Page<TeacherModel> listAllTeachers(@RequestHeader("AUTHORIZATION") String header
+    public Page<UserView> listAllTeachers(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
         return teacherService.findAll(PageRequest.of(page.orElse(0), 5));
     }

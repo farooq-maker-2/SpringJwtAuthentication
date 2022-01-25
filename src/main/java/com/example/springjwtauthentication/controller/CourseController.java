@@ -30,9 +30,6 @@ public class CourseController {
     private CourseService courseService;
 
     @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
     private StudentService studentService;
 
     @Autowired

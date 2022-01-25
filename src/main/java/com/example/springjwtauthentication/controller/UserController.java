@@ -11,9 +11,10 @@ import com.example.springjwtauthentication.repository.AdminRepository;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.service.UserService;
+import com.example.springjwtauthentication.utils.LoginCreds;
+import com.example.springjwtauthentication.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,6 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //@ApiOperation(value = "register user", response = User.class)
     @Operation(summary = "this api is to register the user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success", content = {
@@ -52,11 +52,9 @@ public class UserController {
         boolean saved = false;
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRole().equalsIgnoreCase("student")) {
-            //user.setRole(ApplicationUserRole.STUDENT.name().toLowerCase());
             studentService.saveStudent(studentService.toModel(toStudent(user)));
             saved = true;
         } else if (user.getRole().equalsIgnoreCase("teacher")) {
-            //user.setRole(ApplicationUserRole.TEACHER.name().toLowerCase());
             teacherService.saveTeacher(teacherService.toModel(toTeacher(user)));
             saved = true;
         } else if (user.getRole().equalsIgnoreCase("admin")) {
@@ -76,9 +74,9 @@ public class UserController {
                     @Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @PostMapping("/users/login")
-    public UserModel UserLogin(@RequestParam String email, @RequestParam String password) {
+    public UserView UserLogin(@RequestBody LoginCreds loginCreds) {
         //all authentication is handled in AuthenticationFilter
-        return userService.findUserByEmail(email);
+        return UserView.toUserView(userService.findUserByEmail(loginCreds.getEmail()));
     }
 
     @Operation(summary = "this api is to deactivate user")
@@ -130,7 +128,6 @@ public class UserController {
                 .password(user.getPassword())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName()).build();
-
     }
 
     private Admin toAdmin(User user) {
@@ -142,7 +139,5 @@ public class UserController {
         admin.setFirstName(user.getFirstName());
         admin.setLastName(user.getLastName());
         return admin;
-
     }
-
 }

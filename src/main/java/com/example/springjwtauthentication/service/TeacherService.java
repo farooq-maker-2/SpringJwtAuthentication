@@ -8,6 +8,7 @@ import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.TeacherRepository;
 import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.repository.UserRepository;
+import com.example.springjwtauthentication.view.UserView;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,9 +67,13 @@ public class TeacherService/* implements UserDetailsService*/ {
         return teacherRepository.findTeacherById(teacherId);
     }
 
-    public Page<TeacherModel> findAll(PageRequest of) {
+    public Page<UserView> findAll(PageRequest of) {
         List<TeacherModel> teacherModels = userRepository.findAByRoleContaining("teacher", of).stream().map(t -> this.toModel(t)).collect(Collectors.toList());
-        return new PageImpl<>(teacherModels);
+        List<UserView> userViews = new ArrayList<>();
+        teacherModels.stream().forEach(teacherModel -> {
+            userViews.add(UserView.toTeacherView(teacherModel));
+        });
+        return new PageImpl<>(userViews);
     }
 
     private TeacherModel toModel(User teacher) {
@@ -83,8 +89,8 @@ public class TeacherService/* implements UserDetailsService*/ {
     }
 
     public List<TeacherModel> findTeachersByName(PageRequest pageRequest, String name) {
-        List<User> teachersByLastName = userRepository.findTeachersByLastNameAndRole(/*pageRequest,*/ name,"teacher");
-        List<User> teachersByFirstName = userRepository.findTeachersByFirstNameAndRole(/*pageRequest,*/ name,"teacher");
+        List<User> teachersByLastName = userRepository.findTeachersByLastNameAndRole(/*pageRequest,*/ name, "teacher");
+        List<User> teachersByFirstName = userRepository.findTeachersByFirstNameAndRole(/*pageRequest,*/ name, "teacher");
         return Stream.concat(teachersByLastName.stream(), teachersByFirstName.stream())
                 .collect(Collectors.toList()).stream().map(teacher -> this.toModel(teacher)).collect(Collectors.toList());
     }

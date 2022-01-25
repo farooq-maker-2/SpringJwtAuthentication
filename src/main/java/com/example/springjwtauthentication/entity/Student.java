@@ -30,22 +30,22 @@ public class Student{
     @Schema(accessMode = READ_ONLY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents student's first name", name = "firstName", required = true, example = "Muhammad")
     @Schema(example = "Muhammad")
     private String firstName;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents student's last name", name = "email", required = true, example = "Farooq")
     @Schema(example = "Farooq")
     private String lastName;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents student's email", name = "email", required = true, example = "farooq.maker@gmail.com")
     @Schema(example = "farooq.maker@gmail.com")
     private String email;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents student's password", name = "password", required = true, example = "password")
     @Schema(example = "password")
     private String password;

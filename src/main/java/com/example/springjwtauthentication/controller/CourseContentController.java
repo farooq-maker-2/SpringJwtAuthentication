@@ -4,11 +4,12 @@ import com.example.springjwtauthentication.entity.*;
 import com.example.springjwtauthentication.model.ContentModel;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.model.UserModel;
-import com.example.springjwtauthentication.repository.*;
-import com.example.springjwtauthentication.security.jwt.JwtHelper;
+import com.example.springjwtauthentication.repository.CourseRepository;
+import com.example.springjwtauthentication.repository.StudentRepository;
+import com.example.springjwtauthentication.repository.TeacherRepository;
+import com.example.springjwtauthentication.repository.UserRepository;
 import com.example.springjwtauthentication.service.CourseContentService;
 import com.example.springjwtauthentication.service.CourseService;
-import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.service.UserService;
 import com.google.api.client.util.IOUtils;
 import com.jlefebure.spring.boot.minio.MinioException;
@@ -20,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +30,8 @@ import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.example.springjwtauthentication.security.jwt.JwtHelper.getJwtUser;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -37,9 +39,6 @@ public class CourseContentController {
 
     @Autowired
     private MinioService minioService;
-
-    @Autowired
-    private TeacherService teacherService;
 
     @Autowired
     private CourseService courseService;
@@ -52,9 +51,6 @@ public class CourseContentController {
 
     @Autowired
     private CourseRepository courseRepository;
-
-    @Autowired
-    private ContentRepository contentRepository;
 
     @Autowired
     private TeacherRepository teacherRepository;
@@ -70,48 +66,47 @@ public class CourseContentController {
             @ApiResponse(responseCode = "200", description = "success", content = {
                     @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @io.swagger.v3.oas.annotations.media.Content)})
-    @PostMapping(value = "/teachers/{teacherId}/courses/{courseId}/contents"/*,
-            consumes = {"multipart/mixed", "multipart/form-data"}*/)
+    @PostMapping(value = "/teachers/{teacherId}/courses/{courseId}/contents")
     public String uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
                                       @PathVariable("teacherId") Long teacherId,
                                       @PathVariable("courseId") Long courseId,
-//                                       @RequestBody MultipartFile file
-                                      //@RequestParam Map<String, String> file
-                                      @RequestParam("file") MultipartFile file
-                                      //@RequestPart(value = "file") MultipartFile file
-            /*@RequestBody MultipartFile file*/) {
+                                      @RequestParam("file") MultipartFile file) {
 
-        UserModel user = userService.findUserById(teacherId);
-        Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
-        Course course = courseRepository.findCourseById(courseId);
+        if (isUploadAllowed(header, courseId)) {
+            UserModel user = userService.findUserById(teacherId);
+            Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
+            Course course = courseRepository.findCourseById(courseId);
 
-        if (teacher.getCourses().contains(course)) {
-            ContentModel content = ContentModel
-                    .builder()
-                    .fileName(file.getOriginalFilename())
-                    .contentType(file.getContentType())
-                    .description(String.valueOf(file.getSize()))
-                    .build();
+            if (teacher.getCourses().contains(course)) {
+                ContentModel content = ContentModel
+                        .builder()
+                        .fileName(file.getOriginalFilename())
+                        .contentType(file.getContentType())
+                        .description(String.valueOf(file.getSize()))
+                        .build();
 
-            Path path = Path.of(course.getCourseName() + "/" + file.getOriginalFilename());
-            try {
-                minioService.upload(path, file.getInputStream(), file.getContentType());
+                Path path = Path.of(course.getCourseName() + "/" + file.getOriginalFilename());
+                try {
+                    minioService.upload(path, file.getInputStream(), file.getContentType());
 
-                Content contentEntity = courseContentService.toEntity(content);
-                contentEntity.setCourse(course);
-                courseContentService.saveCourseContent(contentEntity);
-                course.getCourseContents().add(contentEntity);
-                courseRepository.save(course);
+                    Content contentEntity = courseContentService.toEntity(content);
+                    contentEntity.setCourse(course);
+                    courseContentService.saveCourseContent(contentEntity);
+                    course.getCourseContents().add(contentEntity);
+                    courseRepository.save(course);
 
-                return "success";
-            } catch (MinioException e) {
-                throw new IllegalStateException("The file cannot be upload on the internal storage. Please retry later", e);
-            } catch (IOException e) {
-                throw new IllegalStateException("The file cannot be read", e);
+                    return "success";
+                } catch (MinioException e) {
+                    throw new IllegalStateException("The file cannot be upload on the internal storage. Please retry later", e);
+                } catch (IOException e) {
+                    throw new IllegalStateException("The file cannot be read", e);
+                }
+
+            } else {
+                return "upload filed";
             }
-
         } else {
-            return "upload filed";
+            throw new AccessDeniedException("403 returned");
         }
     }
 
@@ -123,8 +118,12 @@ public class CourseContentController {
     @GetMapping("/courses/{courseId}/contents")
     public List<ContentModel> getAllCourseContentsList(@PathVariable("courseId") Long courseId, @RequestHeader("AUTHORIZATION") String header) {
 
-        CourseModel course = courseService.findCourseById(courseId);
-        return courseContentService.getCourseContents(course.getId());
+        if (isDownloadAllowed(header, courseId)) {
+            CourseModel course = courseService.findCourseById(courseId);
+            return courseContentService.getCourseContents(course.getId());
+        } else {
+            throw new AccessDeniedException("403 returned");
+        }
     }
 
     @Operation(summary = "this api is to doenload a course content file")
@@ -132,12 +131,12 @@ public class CourseContentController {
             @ApiResponse(responseCode = "200", description = "success", content = {
                     @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")})})
     @GetMapping("/courses/{courseId}/contents/{fileName}")
-    public /*ResponseEntity<Resource>*/void downloadSingleContent(@PathVariable("courseId") Long courseId,
-                                                                  @PathVariable("fileName") String fileName,
-                                                                  @RequestHeader("AUTHORIZATION") String header,
-                                                                  HttpServletResponse response) {
+    public void downloadSingleContent(@PathVariable("courseId") Long courseId,
+                                      @PathVariable("fileName") String fileName,
+                                      @RequestHeader("AUTHORIZATION") String header,
+                                      HttpServletResponse response) {
 
-        if (isAllowed(header, courseId)) {
+        if (isDownloadAllowed(header, courseId)) {
             InputStream inputStream = null;
             try {
                 Course course = courseRepository.findCourseById(courseId);
@@ -158,15 +157,32 @@ public class CourseContentController {
         }
     }
 
-    private boolean isAllowed(String header, Long courseId) {
+    private boolean isDownloadAllowed(String header, Long courseId) {
         boolean allowed = false;
-        User user = userRepository.findUserById(JwtHelper.getJwtUser(header));
+        User user = userRepository.findUserById(getJwtUser(header));
         Course course = courseRepository.findCourseById(courseId);
         if (user.getRole().equals("student")) {
             Student student = studentRepository.findStudentByEmail(user.getEmail());
             if (student.getCourses().contains(course)) {
                 allowed = true;
             }
+        } else if (user.getRole().equals("teacher")) {
+            Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
+            if (teacher.getCourses().contains(course)) {
+                allowed = true;
+            }
+        } else if (user.getRole().equals("admin")) {
+            allowed = true;
+        }
+        return allowed;
+    }
+
+    private boolean isUploadAllowed(String header, Long courseId) {
+        boolean allowed = false;
+        User user = userRepository.findUserById(getJwtUser(header));
+        Course course = courseRepository.findCourseById(courseId);
+        if (user.getRole().equals("student")) {
+            return false;
         } else if (user.getRole().equals("teacher")) {
             Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
             if (teacher.getCourses().contains(course)) {

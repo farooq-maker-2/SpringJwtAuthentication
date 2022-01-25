@@ -40,22 +40,22 @@ public class User {
     @Schema(accessMode = READ_ONLY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents user's first name", name = "firstName", required = true, example = "Muhammad")
     @Schema(example = "muhammad")
     private String firstName;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents user's last name", name = "lastName", required = true, example = "Farooq")
     @Schema(example = "farooq")
     private String lastName;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents user's email", name = "email", required = true, example = "farooq.user@gmail.com")
     @Schema(example = "farooq.student@gmail.com")
     private String email;
 
-    @Column
+    @Column(nullable = false)
     //@ApiModelProperty(notes = "this field represents user's password", name = "password", required = true, example = "password")
     @Schema(example = "password")
     private String password;
