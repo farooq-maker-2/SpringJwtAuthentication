@@ -1,13 +1,10 @@
 package com.example.springjwtauthentication.entity;
 
-//import io.swagger.annotations.ApiModel;
-//import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.springjwtauthentication.model.UserModel;
 
 import javax.persistence.*;
 

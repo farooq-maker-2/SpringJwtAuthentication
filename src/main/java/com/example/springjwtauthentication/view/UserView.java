@@ -1,7 +1,5 @@
 package com.example.springjwtauthentication.view;
 
-//import io.swagger.annotations.ApiModel;
-
 import com.example.springjwtauthentication.model.StudentModel;
 import com.example.springjwtauthentication.model.TeacherModel;
 import com.example.springjwtauthentication.model.UserModel;
@@ -14,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-//@ApiModel("Details of user")
 public class UserView {
 
     private Long id;

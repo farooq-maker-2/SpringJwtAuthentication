@@ -14,15 +14,6 @@ import java.util.stream.Collectors;
 public class CourseService {
 
     @Autowired
-    private StudentService studentService;
-
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private CourseContentService contentService;
-
-    @Autowired
     private CourseRepository courseRepository;
 
     public Course saveCourse(CourseModel course) {

@@ -57,9 +57,6 @@ public class UserController {
         } else if (user.getRole().equalsIgnoreCase("teacher")) {
             teacherService.saveTeacher(teacherService.toModel(toTeacher(user)));
             saved = true;
-        } else if (user.getRole().equalsIgnoreCase("admin")) {
-            adminRepository.save(toAdmin(user));
-            saved = true;
         }
         if (saved) {
             userService.saveUser(userService.toModel(user));
@@ -130,14 +127,4 @@ public class UserController {
                 .lastName(user.getLastName()).build();
     }
 
-    private Admin toAdmin(User user) {
-
-        Admin admin = new Admin();
-        admin.setStatus("activated");
-        admin.setEmail(user.getEmail());
-        admin.setPassword(user.getPassword());
-        admin.setFirstName(user.getFirstName());
-        admin.setLastName(user.getLastName());
-        return admin;
-    }
 }
