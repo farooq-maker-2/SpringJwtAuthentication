@@ -44,10 +44,6 @@ public class UserService implements UserDetailsService {
 
     }
 
-//    public User findUserByEmailAndPassword(String email, String password) throws UsernameNotFoundException {
-//        return userRepository.findUserByEmailAndPassword(email, password);
-//    }
-
     public UserModel findUserById(Long userId) throws UsernameNotFoundException {
         User user = userRepository.findUserById(userId);
         return this.toModel(user);

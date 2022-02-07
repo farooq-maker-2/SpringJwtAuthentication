@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `students`
 
 CREATE TABLE IF NOT EXISTS `courses`
 (
-    `id`                   bigint       NOT NULL AUTO_INCREMENT,
+    `id`                   bigint NOT NULL AUTO_INCREMENT,
     `all_time_enrollments` bigint DEFAULT NULL,
     `course_name`          varchar(255) NOT NULL,
     `description`          varchar(255) NOT NULL,

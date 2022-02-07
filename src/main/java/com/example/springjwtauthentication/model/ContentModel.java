@@ -17,7 +17,5 @@ public class ContentModel {
     private String fileName;
     private byte[] content;
     private String contentType;
-//    @JsonIgnore
-//    private CourseModel course;
 
 }

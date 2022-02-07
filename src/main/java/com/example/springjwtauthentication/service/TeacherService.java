@@ -41,32 +41,6 @@ public class TeacherService/* implements UserDetailsService*/ {
         return teacherRepository.save(this.toEntity(teacher));
     }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        Teacher teacher = teacherRepository.findTeacherByEmail(email);
-//        if (teacher == null) {
-//            log.error("Teacher not found in database");
-//            throw new UsernameNotFoundException("Invalid Username or Password");
-//        } else {
-//            log.info("user found in the database: {}", email);
-//        }
-//
-//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        teacher.getRoles().forEach(role -> {
-//            authorities.add(new SimpleGrantedAuthority(role.getRole()));
-//        });
-//
-//        return new org.springframework.security.core.userdetails.User(teacher.getEmail(), teacher.getPassword(), authorities);
-//    }
-
-//    public Teacher findTeacherByEmail(String email) {
-//        return teacherRepository.findTeacherByEmail(email);
-//    }
-
-    public Teacher findTeacherById(Long teacherId) {
-        return teacherRepository.findTeacherById(teacherId);
-    }
-
     public Page<UserView> findAll(PageRequest of) {
         List<TeacherModel> teacherModels = userRepository.findAByRoleContaining("teacher", of).stream().map(t -> this.toModel(t)).collect(Collectors.toList());
         List<UserView> userViews = new ArrayList<>();
@@ -84,7 +58,6 @@ public class TeacherService/* implements UserDetailsService*/ {
                 .firstName(teacher.getFirstName())
                 .lastName(teacher.getLastName())
                 .status(teacher.getStatus())
-//                .courses(coursesOfTeacher)
                 .build();
     }
 
@@ -102,10 +75,6 @@ public class TeacherService/* implements UserDetailsService*/ {
 
     public TeacherModel toModel(Teacher teacher) {
 
-//        Set<CourseModel> coursesOfTeacher = (teacher.getCourses() != null) ?
-//                teacher.getCourses().stream().map(course -> courseService.toModel(course)).collect(Collectors.toSet()) :
-//                new HashSet<>();
-
         return TeacherModel.builder()
                 .id(teacher.getId())
                 .email(teacher.getEmail())
@@ -113,7 +82,6 @@ public class TeacherService/* implements UserDetailsService*/ {
                 .firstName(teacher.getFirstName())
                 .lastName(teacher.getLastName())
                 .status(teacher.getStatus())
-//                .courses(coursesOfTeacher)
                 .build();
     }
 
@@ -127,16 +95,5 @@ public class TeacherService/* implements UserDetailsService*/ {
                 .status(teacher.getStatus())
                 .build();
 
-    }
-
-    public boolean containsCourse(Long id, Long courseId) {
-        Teacher teacher = teacherRepository.findTeacherById(id);
-        AtomicBoolean result = new AtomicBoolean(false);
-        teacher.getCourses().stream().forEach(c -> {
-            if (c.getId() == courseId) {
-                result.set(true);
-            }
-        });
-        return result.get();
     }
 }

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentModel {
-
     private Long id;
     private String firstName;
     private String lastName;
@@ -18,7 +17,4 @@ public class StudentModel {
     private String password;
     private String status = "activated";
     private final String role = "student";
-//    @JsonIgnore
-//    private Set<CourseModel> courses;
-
 }

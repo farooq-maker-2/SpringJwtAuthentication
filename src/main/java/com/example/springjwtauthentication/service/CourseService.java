@@ -16,10 +16,6 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public Course saveCourse(CourseModel course) {
-        return courseRepository.save(this.toEntity(course));
-    }
-
     public List<Course> findAllTimeTopTen() {
         return courseRepository.findFirst10ByOrderByAllTimeEnrollmentsDesc();
     }
@@ -57,11 +53,6 @@ public class CourseService {
                 .level(course.getLevel())
                 .allTimeEnrollments(course.getAllTimeEnrollments())
                 .trendingEnrollments(course.getTrendingEnrollments())
-                /*.students((course.getStudents() != null) ?
-                        course.getStudents().stream().map(student -> studentService.toModel(student)).collect(Collectors.toSet()) : new HashSet<>())
-                .teacher(teacherService.toModel(course.getTeacher()))
-                .courseContents((course.getCourseContents() != null) ?
-                        course.getCourseContents().stream().map(content -> contentService.toModel(content)).collect(Collectors.toList()) : new ArrayList<>())*/
                 .build();
     }
 

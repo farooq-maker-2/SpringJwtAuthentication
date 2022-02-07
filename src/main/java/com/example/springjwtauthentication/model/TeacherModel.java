@@ -11,10 +11,7 @@ import java.util.Set;
 @Data
 @Builder
 @NoArgsConstructor
-//@Setter
-//@Getter
 @AllArgsConstructor
-//@ToString
 public class TeacherModel {
 
     private Long id;
@@ -24,7 +21,5 @@ public class TeacherModel {
     private String password;
     private String status = "activated";
     private final String role = "teacher";
-//    @JsonIgnore
-//    private Set<CourseModel> courses;
 
 }

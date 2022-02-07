@@ -14,6 +14,4 @@ public class EnrollmentModel {
 
     private Long id;
     private Date enrollmentDate;
-//    @JsonIgnore
-//    private CourseModel course;
 }

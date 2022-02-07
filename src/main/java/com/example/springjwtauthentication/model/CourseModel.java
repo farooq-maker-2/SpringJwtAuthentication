@@ -23,14 +23,6 @@ public class CourseModel {
     private String level;
     private Long allTimeEnrollments = 0L;
     private Long trendingEnrollments = 0L;
-//    @JsonIgnore
-//    private Set<StudentModel> students;
-//    @JsonIgnore
-//    private TeacherModel teacher;
-//    @JsonIgnore
-//    private List<ContentModel> courseContents;
-//    @JsonIgnore
-//    private List<EnrollmentModel> enrollments;
 
 }
 

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,11 +70,17 @@ public class TeacherController {
                     @Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/teachers/{name}")
-    public List<TeacherModel> listTeachersByName(@RequestHeader("AUTHORIZATION") String header,
+    public List<UserView> listTeachersByName(@RequestHeader("AUTHORIZATION") String header,
                                                  @PathVariable("name") String teacherName,
                                                  @RequestParam Optional<Integer> page) {
 
-        return teacherService.findTeachersByName(PageRequest.of(page.orElse(0), 5), teacherName);
+        List<TeacherModel> teacherModels = teacherService.findTeachersByName(PageRequest.of(page.orElse(0), 5), teacherName);
+
+        List<UserView> userViews = new ArrayList<>();
+        teacherModels.stream().forEach(teacherModel -> {
+            userViews.add(UserView.toTeacherView(teacherModel));
+        });
+        return userViews;
     }
 
     @GetMapping("/teachers/{teacherId}/courses")

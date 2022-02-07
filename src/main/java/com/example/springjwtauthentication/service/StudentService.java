@@ -42,33 +42,6 @@ public class StudentService {
         return studentRepository.save(this.toEntity(student));
     }
 
-//    public Student addRoleToStudent(String email, Long roleId) {
-//
-//        Student student = studentRepository.findStudentByEmail(email);
-//        Role role = roleRepository.findRoleById(roleId);
-//        student.getRoles().add(role);
-//        studentRepository.save(student);
-//        return student;
-//    }
-
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        Student student = studentRepository.findStudentByEmail(email);
-//        if (student == null) {
-//            log.error("student not found in database");
-//            throw new UsernameNotFoundException("Invalid Username or Password");
-//        } else {
-//            log.info("user found in the database: {}", email);
-//        }
-//
-//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        student.getRoles().forEach(role -> {
-//            authorities.add(new SimpleGrantedAuthority(role.getRole()));
-//        });
-//
-//        return new org.springframework.security.core.userdetails.User(student.getEmail(), student.getPassword(), authorities);
-//    }
-
     public String enrollStudentForCourse(StudentModel student, Long courseId) {
 
         Course course = courseRepository.findCourseById(courseId);
@@ -105,10 +78,6 @@ public class StudentService {
         return "failure";
     }
 
-    public Student findStudentById(Long studentId) {
-        return studentRepository.findStudentById(studentId);
-    }
-
     public void deleteEnrollments(Long courseId) {
         studentRepository.findAll().stream().forEach(student -> {
 
@@ -132,10 +101,6 @@ public class StudentService {
         student_.setCourses(new HashSet<>());
         studentRepository.delete(student_);
         return true;
-    }
-
-    public Page<User> findAll(PageRequest of) {
-        return userRepository.findAByRoleContaining("student", of);
     }
 
     public StudentModel toModel(Student student) {

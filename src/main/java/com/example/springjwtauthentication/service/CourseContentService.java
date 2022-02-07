@@ -27,10 +27,6 @@ public class CourseContentService {
         return courseContentRepository.save(content);
     }
 
-    public Content getSingleContent(Long contentId) {
-        return courseContentRepository.findContentById(contentId);
-    }
-
     public ContentModel toModel(Content content) {
         return ContentModel.builder()
                 .id(content.getId())
