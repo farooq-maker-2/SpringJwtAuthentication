@@ -7,7 +7,6 @@ import com.example.springjwtauthentication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -62,7 +61,6 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
          * permit all cross-origin requests for GET, HEAD, and POST requests.
          */
         http.cors().
-//      configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).
         configurationSource(request -> corsConfig).
                 and().csrf().disable();
 
@@ -70,27 +68,20 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
         UserAuthenticationFilter userAuthenticationFilter = new UserAuthenticationFilter(authenticationManagerBean());
         userAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
         http.authorizeRequests()
-                //.antMatchers("/api/admins/**").hasRole("ADMIN")
                 .antMatchers("/api/users/login/**").permitAll()
                 .antMatchers("api/courses").permitAll()
-                .antMatchers("/api/users/register").permitAll()
-        /*.antMatchers("/api/courses/**").hasRole(ApplicationUserRole.STUDENT.name().toLowerCase())*/;
+                .antMatchers("/api/users/register").permitAll();
 
         http.
                 authorizeRequests().
                 antMatchers("/api/students/{studentId}/**").
-                access("@userSecurity.hasUserId(authentication,#studentId)");
-        //access(hasUserId(authentication,studentId));
-
-//        http.
-//                authorizeRequests().
-//                antMatchers("/api/teachers/{teacherId}/**").
-//                access("@userSecurity.hasUserId(authentication,#teacherId)");
+                access("@userSecurity.hasUserId(authentication,#studentId)").
+                antMatchers("/api/teachers/{teacherId}/**").
+                access("@userSecurity.hasUserId(authentication,#teacherId)");;
 
         http.requestMatchers().antMatchers("/api/**");
         http.requestMatchers().antMatchers("/api/**");
         http.authorizeRequests().antMatchers("/api/users/**").authenticated();
-        //http.headers().
 
         http.addFilter(userAuthenticationFilter);
         http.addFilterBefore(new UserAuthorizatonFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -100,10 +91,6 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Component("userSecurity")
     public class UserSecurity {
         public boolean hasUserId(Authentication authentication, Long userId) {
-            // do your check(s) here
-            //boolean isSameUser = false;
-            //User user = (User) authentication.getCredentials();
-            //System.out.println("inside security function");
             if (Long.valueOf(authentication.getPrincipal().toString()) == userId) {
 
                 return true;
