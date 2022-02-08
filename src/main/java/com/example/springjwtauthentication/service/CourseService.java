@@ -1,14 +1,13 @@
 package com.example.springjwtauthentication.service;
 
 import com.example.springjwtauthentication.entity.Course;
-import com.example.springjwtauthentication.model.*;
+import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.repository.CourseRepository;
-import com.example.springjwtauthentication.entity.Enrollment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.math.BigInteger;
+import java.util.List;
 
 @Service
 public class CourseService {
@@ -16,27 +15,11 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public List<Course> findAllTimeTopTen() {
+    public List<Object> findAllTimeTopTen() {
         return courseRepository.findFirst10ByOrderByAllTimeEnrollmentsDesc();
     }
 
-    public List<Course> findTopTenTrendingCourses() {
-
-        List<Course> allCourses = courseRepository.findAll();
-        for (Course course : allCourses) {
-
-            List<Enrollment> enrollments = course.getEnrollments();
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -7);
-            Long count = 0L;
-            for (Enrollment enrollment : enrollments) {
-                if (enrollment.getEnrollmentDate().after(cal.getTime())) {
-                    count++;
-                }
-            }
-            course.setTrendingEnrollments(count);
-            courseRepository.save(course);
-        }
+    public List<Object> findTopTenTrendingCourses() {
         return courseRepository.findFirst10ByOrderByTrendingEnrollmentsDesc();
     }
 
@@ -51,8 +34,15 @@ public class CourseService {
                 .courseName(course.getCourseName())
                 .description(course.getDescription())
                 .level(course.getLevel())
-                .allTimeEnrollments(course.getAllTimeEnrollments())
-                .trendingEnrollments(course.getTrendingEnrollments())
+                .build();
+    }
+
+    public CourseModel toModel(Object course) {
+        return CourseModel.builder()
+                .id(Long.valueOf(((BigInteger) ((Object[]) course)[0]).intValue()))
+                .courseName((((Object[]) course)[1]).toString())
+                .description((((Object[]) course)[2]).toString())
+                .level((((Object[]) course)[3]).toString())
                 .build();
     }
 
@@ -62,8 +52,6 @@ public class CourseService {
                 .courseName(course.getCourseName())
                 .description(course.getDescription())
                 .level(course.getLevel())
-                .allTimeEnrollments(course.getAllTimeEnrollments())
-                .trendingEnrollments(course.getTrendingEnrollments())
                 .build();
     }
 }

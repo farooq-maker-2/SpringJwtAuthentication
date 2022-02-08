@@ -3,10 +3,10 @@ package com.example.springjwtauthentication.controller;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.model.CourseModel;
-import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.repository.TeacherRepository;
-import com.example.springjwtauthentication.service.*;
+import com.example.springjwtauthentication.service.CourseService;
+import com.example.springjwtauthentication.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,12 +30,6 @@ public class CourseController {
     private CourseService courseService;
 
     @Autowired
-    private StudentService studentService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private EnrollmentService enrollmentService;
 
     @Autowired
@@ -55,8 +49,7 @@ public class CourseController {
             @RequestHeader("AUTHORIZATION") String header,
             @RequestBody Course course) {
 
-        UserModel user = userService.findUserById(teacherId);
-        Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
+        Teacher teacher = teacherRepository.findTeacherById(teacherId);
         if (teacher != null) {
             course.setTeacher(teacher);
             courseRepository.save(course);
@@ -70,7 +63,7 @@ public class CourseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success", content = {
                     @Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
+            @ApiResponse(responseCode = "400", description = "failure")})
     @GetMapping("/courses")
     public Page<CourseModel> listAllCourses(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
@@ -104,12 +97,11 @@ public class CourseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success", content = {
                     @Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
+            @ApiResponse(responseCode = "400", description = "failure")})
     @DeleteMapping("/courses/{courseId}")
     public String DeleteCourse(@RequestHeader("AUTHORIZATION") String header,
                                @PathVariable("courseId") Long courseId) {
 
-        studentService.deleteEnrollments(courseId);
         enrollmentService.deleteEnrollments(courseId);
         if (courseRepository.existsById(courseId)) {
             courseRepository.deleteById(courseId);

@@ -68,20 +68,20 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
         UserAuthenticationFilter userAuthenticationFilter = new UserAuthenticationFilter(authenticationManagerBean());
         userAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
         http.authorizeRequests()
-                .antMatchers("/api/users/login/**").permitAll()
-                .antMatchers("api/courses").permitAll()
+                .antMatchers("/api/users/login").permitAll()
+                .antMatchers("/api/courses").permitAll()
                 .antMatchers("/api/users/register").permitAll();
 
-        http.
-                authorizeRequests().
-                antMatchers("/api/students/{studentId}/**").
-                access("@userSecurity.hasUserId(authentication,#studentId)").
-                antMatchers("/api/teachers/{teacherId}/**").
-                access("@userSecurity.hasUserId(authentication,#teacherId)");;
+//        http.
+//                authorizeRequests().
+//                antMatchers("/api/students/{studentId}/**").
+//                access("@userSecurity.hasUserId(authentication,#studentId)").
+//                antMatchers("/api/teachers/{teacherId}/**").
+//                access("@userSecurity.hasUserId(authentication,#teacherId)");
 
         http.requestMatchers().antMatchers("/api/**");
-        http.requestMatchers().antMatchers("/api/**");
-        http.authorizeRequests().antMatchers("/api/users/**").authenticated();
+        //http.authorizeRequests().antMatchers("/api/users/**").authenticated();
+        http.authorizeRequests().antMatchers("/api/**").authenticated();
 
         http.addFilter(userAuthenticationFilter);
         http.addFilterBefore(new UserAuthorizatonFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -92,16 +92,16 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
     public class UserSecurity {
         public boolean hasUserId(Authentication authentication, Long userId) {
             if (Long.valueOf(authentication.getPrincipal().toString()) == userId) {
-
                 return true;
-            } else {
+            } /*else {
                 UserModel user = userService.findUserById(Long.valueOf(authentication.getPrincipal().toString()));
                 if (user.getRole().equals("admin")) {
                     return true;
                 } else {
                     return false;
                 }
-            }
+            }*/
+            return false;
         }
     }
 

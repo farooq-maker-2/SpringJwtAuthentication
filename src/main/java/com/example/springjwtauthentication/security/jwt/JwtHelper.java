@@ -40,32 +40,8 @@ public class JwtHelper {
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
 
-        String refresh_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 1000))
-                .withIssuer(request.getRequestURL().toString())
-                .sign(algorithm);
-
-//        Map<String, String> tokens = new HashMap<>();
-//        tokens.put("access_token", access_token);
-//        tokens.put("refresh_token", refresh_token);
-//        response.setContentType(APPLICATION_JSON_VALUE);
-//        try {
-//            new ObjectMapper().writeValue(response.getOutputStream(),tokens);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        //response.setHeader("Access-Control-Expose-Headers", "access_token, access_token");
-        //response.setHeader("jwt", access_token);
         response.setHeader("access_token", access_token);
-        response.setHeader("refresh_token", refresh_token);
-        //response.addHeader("access_token", access_token);
-        //response.addHeader("refresh_token", refresh_token);
         response.setHeader("Access-Control-Expose-Headers", "access_token, refresh_token");
-        //response.setHeader("user", user);
-        //response.set("response", response);
-
     }
 
     public static void verifyJwtCode(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
@@ -138,5 +114,4 @@ public class JwtHelper {
             e.printStackTrace();
         }
     }
-
 }

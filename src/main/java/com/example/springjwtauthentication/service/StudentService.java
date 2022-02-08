@@ -1,33 +1,25 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.entity.*;
+import com.example.springjwtauthentication.entity.Course;
+import com.example.springjwtauthentication.entity.Enrollment;
+import com.example.springjwtauthentication.entity.Student;
+import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.model.StudentModel;
-import com.example.springjwtauthentication.model.TeacherModel;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.repository.EnrollmentRepository;
 import com.example.springjwtauthentication.repository.StudentRepository;
-import com.example.springjwtauthentication.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
 @Transactional
 public class StudentService {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -38,11 +30,7 @@ public class StudentService {
     @Autowired
     private EnrollmentRepository enrollmentRepository;
 
-    public Student saveStudent(StudentModel student) {
-        return studentRepository.save(this.toEntity(student));
-    }
-
-    public String enrollStudentForCourse(StudentModel student, Long courseId) {
+    public String enrollStudentForCourse(User student, Long courseId) {
 
         Course course = courseRepository.findCourseById(courseId);
         if (course != null && student != null) {
@@ -55,7 +43,6 @@ public class StudentService {
             enrollmentRepository.save(enrollment);
 
             course.getEnrollments().add(enrollment);
-            course.setAllTimeEnrollments(course.getAllTimeEnrollments() + 1);
             courseRepository.save(course);
 
             Student student_ =  studentRepository.findStudentById(student.getId());
@@ -66,7 +53,7 @@ public class StudentService {
         return "failure";
     }
 
-    public String optoutStudentFromCourse(StudentModel student, Long courseId) {
+    public String optoutStudentFromCourse(User student, Long courseId) {
 
         Course course = courseRepository.findCourseById(courseId);
         if (course != null && student != null) {
@@ -78,25 +65,21 @@ public class StudentService {
         return "failure";
     }
 
-    public void deleteEnrollments(Long courseId) {
-        studentRepository.findAll().stream().forEach(student -> {
+//    public void deleteEnrollments(Long courseId) {
+//        studentRepository.findAll().stream().forEach(student -> {
+//
+//            Set<Course> updatedCourses = new HashSet<>();
+//            student.getCourses().stream().forEach(c -> {
+//                if (c.getId() != courseId) {
+//                    updatedCourses.add(c);
+//                }
+//            });
+//            student.setCourses(updatedCourses);
+//            studentRepository.save(student);
+//        });
+//    }
 
-            Set<Course> updatedCourses = new HashSet<>();
-            student.getCourses().stream().forEach(c -> {
-                if (c.getId() != courseId) {
-                    updatedCourses.add(c);
-                }
-            });
-            student.setCourses(updatedCourses);
-            studentRepository.save(student);
-        });
-    }
-
-    public StudentModel findStudentByEmail(String email) {
-        return this.toModel(studentRepository.findStudentByEmail(email));
-    }
-
-    public boolean optoutAndDeleteStudent(StudentModel student) {
+    public boolean optoutAndDeleteStudent(Student student) {
         Student student_ = studentRepository.findStudentById(student.getId());
         student_.setCourses(new HashSet<>());
         studentRepository.delete(student_);
@@ -127,8 +110,8 @@ public class StudentService {
 
     }
 
-    public Student toEntity(StudentModel student) {
-        return Student.builder()
+    public User toEntity(StudentModel student) {
+        return User.builder()
                 .id(student.getId())
                 .email(student.getEmail())
                 .password(student.getPassword())

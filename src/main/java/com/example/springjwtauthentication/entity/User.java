@@ -10,8 +10,6 @@ import javax.persistence.*;
 
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
-@Entity
-@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +24,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
  * as a few Hibernate-specific features related to inheritance.
  *
  * */
-
+@MappedSuperclass
 public class User {
 
     @Id

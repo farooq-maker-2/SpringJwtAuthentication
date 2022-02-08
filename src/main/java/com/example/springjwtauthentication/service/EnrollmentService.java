@@ -13,10 +13,7 @@ public class EnrollmentService {
 
     public void deleteEnrollments(Long courseId) {
 
-        enrollmentRepository.findAll().stream().forEach(enrollment -> {
-            if (enrollment.getCourse().getId() == courseId) {
-                enrollmentRepository.delete(enrollment);
-            }
-        });
+        enrollmentRepository.deleteEnrollmentByCourseId(courseId);
+        enrollmentRepository.deleteCourseStudentByCourseId(courseId);
     }
 }

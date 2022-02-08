@@ -34,14 +34,6 @@ public class Course {
     @Schema(example = "500")
     private String level;
 
-    @Column
-    @Schema(example = "0")
-    private Long allTimeEnrollments = 0L;
-
-    @Column
-    @Schema(example = "0")
-    private Long trendingEnrollments = 0L;
-
     @JsonIgnore
     @ManyToMany(mappedBy = "courses")
     private Set<Student> students;

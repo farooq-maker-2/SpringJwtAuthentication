@@ -4,13 +4,9 @@ import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Student;
 import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.model.CourseModel;
-import com.example.springjwtauthentication.model.StudentModel;
-import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.StudentRepository;
-import com.example.springjwtauthentication.repository.UserRepository;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.StudentService;
-import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,13 +33,7 @@ public class StudentController {
     private CourseService courseService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private StudentRepository studentRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Operation(summary = "this api is to list all courses")
     @ApiResponses(value = {
@@ -53,11 +43,10 @@ public class StudentController {
     @GetMapping("/students")
     public Page<UserView> listAllStudents(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
-        Page<User> students = userRepository.findAllByRole("student",PageRequest.of(page.orElse(0), 5));
-        List<StudentModel> studentModels = students.stream().map(student -> studentService.toModel(student)).collect(Collectors.toList());
+        Page<Student> students = studentRepository.findAll(PageRequest.of(page.orElse(0), 5));
         List<UserView> userViews = new ArrayList<>();
-        studentModels.stream().forEach(studentModel -> {
-            userViews.add(UserView.toStudentView(studentModel));
+        students.stream().forEach(student -> {
+            userViews.add(UserView.toStudentView(student));
         });
 
         return new PageImpl<>(userViews);
@@ -73,8 +62,7 @@ public class StudentController {
                                           @PathVariable("studentId") Long studentId,
                                           @PathVariable("courseId") Long courseId) {
 
-        UserModel user = userService.findUserById(studentId);
-        StudentModel student = studentService.findStudentByEmail(user.getEmail());
+        User student = studentRepository.findStudentById(studentId);
         return studentService.enrollStudentForCourse(student, courseId);
     }
 
@@ -88,8 +76,7 @@ public class StudentController {
                                            @PathVariable("studentId") Long studentId,
                                            @PathVariable("courseId") Long courseId) {
 
-        UserModel user = userService.findUserById(studentId);
-        StudentModel student = studentService.findStudentByEmail(user.getEmail());
+        User student = studentRepository.findStudentById(studentId);
         return studentService.optoutStudentFromCourse(student, courseId);
     }
 
@@ -103,8 +90,7 @@ public class StudentController {
                                                 @PathVariable("studentId") Long studentId,
                                                 @RequestParam Optional<Integer> page) {
 
-        UserModel user = userService.findUserById(studentId);
-        Student student = studentRepository.findStudentByEmail(user.getEmail());
+        Student student = studentRepository.findStudentById(studentId);
         Set<Course> courses = student.getCourses();
         Set<CourseModel> courseModels = courses.stream().map(course -> courseService.toModel(course)).collect(Collectors.toSet());
         int pageSize = 5;

@@ -1,13 +1,13 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.entity.Course;
+import com.example.springjwtauthentication.entity.Teacher;
+import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.model.TeacherModel;
-import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.repository.TeacherRepository;
 import com.example.springjwtauthentication.service.CourseService;
 import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,13 +24,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TeacherController {
 
     @Autowired
     private TeacherService teacherService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private CourseService courseService;
@@ -42,8 +40,7 @@ public class TeacherController {
     public String deactivateTeacher(@RequestHeader("AUTHORIZATION") String header,
                                     @PathVariable("teacherId") Long teacherId) {
 
-        UserModel user = userService.findUserById(teacherId);
-        TeacherModel teacher = teacherService.findTeacherByEmail(user.getEmail());
+        Teacher teacher = teacherRepository.findTeacherById(teacherId);
         if (teacher != null) {
             teacher.setStatus("deactivated");
             teacherService.saveTeacher(teacher);
@@ -61,7 +58,13 @@ public class TeacherController {
     @GetMapping("/teachers")
     public Page<UserView> listAllTeachers(@RequestHeader("AUTHORIZATION") String header
             , @RequestParam Optional<Integer> page) {
-        return teacherService.findAll(PageRequest.of(page.orElse(0), 5));
+        Page<Teacher> teachers = teacherRepository.findAll(PageRequest.of(page.orElse(0), 5));
+        List<UserView> userViews = new ArrayList<>();
+        teachers.stream().forEach(teacher -> {
+            userViews.add(UserView.toView(teacher));
+        });
+
+        return new PageImpl<>(userViews);
     }
 
     @Operation(summary = "this api is to list all courses of teacher by name")
@@ -71,14 +74,14 @@ public class TeacherController {
             @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @GetMapping("/teachers/{name}")
     public List<UserView> listTeachersByName(@RequestHeader("AUTHORIZATION") String header,
-                                                 @PathVariable("name") String teacherName,
-                                                 @RequestParam Optional<Integer> page) {
+                                             @PathVariable("name") String teacherName,
+                                             @RequestParam Optional<Integer> page) {
 
-        List<TeacherModel> teacherModels = teacherService.findTeachersByName(PageRequest.of(page.orElse(0), 5), teacherName);
+        List<Teacher> teachers = teacherRepository.findTeachersByFirstNameAndLastName(PageRequest.of(page.orElse(0), 5), teacherName);
 
         List<UserView> userViews = new ArrayList<>();
-        teacherModels.stream().forEach(teacherModel -> {
-            userViews.add(UserView.toTeacherView(teacherModel));
+        teachers.stream().forEach(teacher -> {
+            userViews.add(UserView.toView(teacher));
         });
         return userViews;
     }
@@ -89,8 +92,7 @@ public class TeacherController {
                                                 @RequestParam Optional<Integer> page
     ) {
 
-        UserModel user = userService.findUserById(teacherId);
-        TeacherModel teacher = teacherService.findTeacherByEmail(user.getEmail());
+        User teacher = teacherRepository.findTeacherById(teacherId);
         Set<Course> coursesOfTeacher = teacherRepository.findTeacherById(teacher.getId()).getCourses();
         Set<Course> courses = coursesOfTeacher;
         Set<CourseModel> courseModels = courses.stream().map(course -> courseService.toModel(course)).collect(Collectors.toSet());

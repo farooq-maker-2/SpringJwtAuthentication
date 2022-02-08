@@ -1,15 +1,12 @@
 package com.example.springjwtauthentication.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-//import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
-
 import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
 @Entity

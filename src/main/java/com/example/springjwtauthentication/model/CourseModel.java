@@ -1,14 +1,6 @@
-
 package com.example.springjwtauthentication.model;
-
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import java.util.List;
-import java.util.Set;
-
-//@Data
 @Setter
 @Getter
 @AllArgsConstructor
