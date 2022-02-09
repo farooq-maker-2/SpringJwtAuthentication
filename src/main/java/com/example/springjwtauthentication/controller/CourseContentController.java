@@ -1,6 +1,8 @@
 package com.example.springjwtauthentication.controller;
 
+import com.example.springjwtauthentication.controller.response.HttpResponse;
 import com.example.springjwtauthentication.entity.*;
+import com.example.springjwtauthentication.mapper.ContentMapper;
 import com.example.springjwtauthentication.model.ContentModel;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.repository.CourseRepository;
@@ -15,7 +17,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,14 +28,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.springjwtauthentication.security.jwt.JwtHelper.getJwtUser;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
 public class CourseContentController {
 
     @Autowired
@@ -57,12 +59,16 @@ public class CourseContentController {
             @ApiResponse(responseCode = "200", description = "success", content = {
                     @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @io.swagger.v3.oas.annotations.media.Content)})
+    @PreAuthorize("#teacherId.toString().equals(authentication.principal) " +
+            "&& #authentication.getAuthorities().toArray()[0].toString().equals(\"teacher\")")
     @PostMapping(value = "/teachers/{teacherId}/courses/{courseId}/contents")
-    public String uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
-                                      @PathVariable("teacherId") Long teacherId,
-                                      @PathVariable("courseId") Long courseId,
-                                      @RequestParam("file") MultipartFile file) {
+    public HttpResponse<String> uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
+                                                    @PathVariable("teacherId") Long teacherId,
+                                                    @PathVariable("courseId") Long courseId,
+                                                    @RequestParam("file") MultipartFile file,
+                                                    Authentication authentication) {
 
+        HttpResponse<String> response = new HttpResponse<>();
         if (isUploadAllowed(header, courseId)) {
             Teacher teacher = teacherRepository.findTeacherById(teacherId);
             Course course = courseRepository.findCourseById(courseId);
@@ -79,26 +85,26 @@ public class CourseContentController {
                 try {
                     minioService.upload(path, file.getInputStream(), file.getContentType());
 
-                    Content contentEntity = courseContentService.toEntity(content);
+                    Content contentEntity = ContentMapper.toEntity(content);
                     contentEntity.setCourse(course);
                     courseContentService.saveCourseContent(contentEntity);
                     course.getCourseContents().add(contentEntity);
                     courseRepository.save(course);
-
-                    return "success";
+                    response.setSuccess(true);
                 } catch (MinioException e) {
                     throw new IllegalStateException("The file cannot be upload on the internal storage. Please retry later", e);
                 } catch (IOException e) {
                     throw new IllegalStateException("The file cannot be read", e);
                 }
-
             } else {
-                return "upload failed";
+                response.setSuccess(false);
+                response.setMessage("upload failed");
             }
         } else {
-            //throw new AccessDeniedException("403 returned");
-            return "";
+            response.setMessage("Forbidden");
+            throw new AccessDeniedException("403 :: Forbidden");
         }
+        return response;
     }
 
     @Operation(summary = "this api is to get list of all course content files")
@@ -107,15 +113,18 @@ public class CourseContentController {
                     @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @io.swagger.v3.oas.annotations.media.Content)})
     @GetMapping("/courses/{courseId}/contents")
-    public List<ContentModel> getAllCourseContentsList(@PathVariable("courseId") Long courseId, @RequestHeader("AUTHORIZATION") String header) {
+    public HttpResponse<List<ContentModel>> getAllCourseContentsList(@PathVariable("courseId") Long courseId,
+                                                                     @RequestHeader("AUTHORIZATION") String header) {
 
+        HttpResponse<List<ContentModel>> response = new HttpResponse<>();
         if (isDownloadAllowed(header, courseId)) {
             CourseModel course = courseService.findCourseById(courseId);
-            return courseContentService.getCourseContents(course.getId());
+            response.setData(courseContentService.getCourseContents(course.getId()));
         } else {
-            //throw new AccessDeniedException("403 returned");
-            return new ArrayList<>();
+            throw new AccessDeniedException("403:: forbidden");
         }
+        response.setSuccess(response.getData() != null);
+        return response;
     }
 
     @Operation(summary = "this api is to doenload a course content file")
@@ -143,13 +152,16 @@ public class CourseContentController {
                 e.printStackTrace();
             }
         } else {
-            //throw new AccessDeniedException("403 returned");
+            throw new AccessDeniedException("403 :: forbidden");
         }
     }
 
     private boolean isDownloadAllowed(String header, Long courseId) {
         boolean allowed = false;
         User user = teacherRepository.findTeacherById(getJwtUser(header));
+        if(user == null){
+            user = studentRepository.findStudentById(getJwtUser(header));
+        }
         Course course = courseRepository.findCourseById(courseId);
         if (user.getRole().equals("student")) {
             Student student = studentRepository.findStudentByEmail(user.getEmail());

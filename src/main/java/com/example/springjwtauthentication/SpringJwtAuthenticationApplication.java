@@ -8,10 +8,13 @@ import io.swagger.v3.oas.models.info.License;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
 
 @SpringBootApplication
-//@EnableSwagger2
-//@EntityScan(basePackages = {"com.example.springjwtauthentication.course", "com.example.springjwtauthentication.student"})
 @OpenAPIDefinition
 public class SpringJwtAuthenticationApplication {
 
@@ -29,6 +32,18 @@ public class SpringJwtAuthenticationApplication {
                 .externalDocs(new ExternalDocumentation()
                         .description("github link")
                         .url("https://github.com/farooq-maker-2/SpringJwtAuthentication"));
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods(String.valueOf(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")));
+            }
+        };
     }
 
 }

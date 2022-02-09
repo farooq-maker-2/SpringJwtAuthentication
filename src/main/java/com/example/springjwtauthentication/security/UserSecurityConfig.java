@@ -1,6 +1,5 @@
 package com.example.springjwtauthentication.security;
 
-import com.example.springjwtauthentication.model.UserModel;
 import com.example.springjwtauthentication.security.filter.UserAuthenticationFilter;
 import com.example.springjwtauthentication.security.filter.UserAuthorizatonFilter;
 import com.example.springjwtauthentication.service.UserService;
@@ -11,13 +10,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.Arrays;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -32,52 +27,24 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CorsConfiguration corsConfig;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-         auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        /**
-         * By default a newly created CorsConfiguration does not permit
-         * any cross-origin requests and must be configured explicitly
-         * to indicate what should be allowed. Use applyPermitDefaultValues()
-         * to flip the initialization model to start with open defaults that
-         * permit all cross-origin requests for GET, HEAD, and POST requests.
-         */
-
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.applyPermitDefaultValues();
-        corsConfig.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        //allow customs headers for cors request
-        /**
-         * By default a newly created CorsConfiguration does not permit
-         * any cross-origin requests and must be configured explicitly
-         * to indicate what should be allowed. Use applyPermitDefaultValues()
-         * to flip the initialization model to start with open defaults that
-         * permit all cross-origin requests for GET, HEAD, and POST requests.
-         */
-        http.cors().
-        configurationSource(request -> corsConfig).
-                and().csrf().disable();
-
+        http.cors().configurationSource(request -> corsConfig).and().csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         UserAuthenticationFilter userAuthenticationFilter = new UserAuthenticationFilter(authenticationManagerBean());
         userAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
         http.authorizeRequests()
                 .antMatchers("/api/users/login").permitAll()
-                .antMatchers("/api/courses").permitAll()
                 .antMatchers("/api/users/register").permitAll();
-
-//        http.
-//                authorizeRequests().
-//                antMatchers("/api/students/{studentId}/**").
-//                access("@userSecurity.hasUserId(authentication,#studentId)").
-//                antMatchers("/api/teachers/{teacherId}/**").
-//                access("@userSecurity.hasUserId(authentication,#teacherId)");
 
         http.requestMatchers().antMatchers("/api/**");
         //http.authorizeRequests().antMatchers("/api/users/**").authenticated();
@@ -85,24 +52,6 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilter(userAuthenticationFilter);
         http.addFilterBefore(new UserAuthorizatonFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-
-    @Component("userSecurity")
-    public class UserSecurity {
-        public boolean hasUserId(Authentication authentication, Long userId) {
-            if (Long.valueOf(authentication.getPrincipal().toString()) == userId) {
-                return true;
-            } /*else {
-                UserModel user = userService.findUserById(Long.valueOf(authentication.getPrincipal().toString()));
-                if (user.getRole().equals("admin")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }*/
-            return false;
-        }
     }
 
 }

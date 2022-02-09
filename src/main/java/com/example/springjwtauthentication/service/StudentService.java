@@ -4,7 +4,6 @@ import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Enrollment;
 import com.example.springjwtauthentication.entity.Student;
 import com.example.springjwtauthentication.entity.User;
-import com.example.springjwtauthentication.model.StudentModel;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.repository.EnrollmentRepository;
 import com.example.springjwtauthentication.repository.StudentRepository;
@@ -65,60 +64,10 @@ public class StudentService {
         return "failure";
     }
 
-//    public void deleteEnrollments(Long courseId) {
-//        studentRepository.findAll().stream().forEach(student -> {
-//
-//            Set<Course> updatedCourses = new HashSet<>();
-//            student.getCourses().stream().forEach(c -> {
-//                if (c.getId() != courseId) {
-//                    updatedCourses.add(c);
-//                }
-//            });
-//            student.setCourses(updatedCourses);
-//            studentRepository.save(student);
-//        });
-//    }
-
     public boolean optoutAndDeleteStudent(Student student) {
         Student student_ = studentRepository.findStudentById(student.getId());
         student_.setCourses(new HashSet<>());
         studentRepository.delete(student_);
         return true;
-    }
-
-    public StudentModel toModel(Student student) {
-        return StudentModel.builder()
-                .id(student.getId())
-                .email(student.getEmail())
-                .password(student.getPassword())
-                .firstName(student.getFirstName())
-                .lastName(student.getLastName())
-                .status(student.getStatus())
-                .build();
-
-    }
-
-    public StudentModel toModel(User student) {
-        return StudentModel.builder()
-                .id(student.getId())
-                .email(student.getEmail())
-                .password(student.getPassword())
-                .firstName(student.getFirstName())
-                .lastName(student.getLastName())
-                .status(student.getStatus())
-                .build();
-
-    }
-
-    public User toEntity(StudentModel student) {
-        return User.builder()
-                .id(student.getId())
-                .email(student.getEmail())
-                .password(student.getPassword())
-                .firstName(student.getFirstName())
-                .lastName(student.getLastName())
-                .status(student.getStatus())
-                .build();
-
     }
 }

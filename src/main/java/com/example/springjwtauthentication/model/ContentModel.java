@@ -14,7 +14,6 @@ public class ContentModel {
     private Long id;
     private String description;
     private String fileName;
-    private byte[] content;
     private String contentType;
 
 }

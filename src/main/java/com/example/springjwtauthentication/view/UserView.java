@@ -21,7 +21,7 @@ public class UserView {
     private String status = "activated";
     private String role;
 
-    public static UserView toStudentView(Student studentModel) {
+    public static UserView toUserView(Student studentModel) {
 
         if (studentModel == null) {
             return null;
@@ -34,7 +34,7 @@ public class UserView {
         }
     }
 
-    public static UserView toView(Teacher teacherModel) {
+    public static UserView toUserView(Teacher teacherModel) {
 
         if (teacherModel == null) {
             return null;
@@ -47,7 +47,7 @@ public class UserView {
         }
     }
 
-    public static UserView toView(UserModel userModel) {
+    public static UserView toUserView(UserModel userModel) {
         if (userModel == null) {
             return null;
         } else {
@@ -59,7 +59,7 @@ public class UserView {
         }
     }
 
-    public static UserView toView(Admin adminModel) {
+    public static UserView toUserView(Admin adminModel) {
         if (adminModel == null) {
             return null;
         } else {

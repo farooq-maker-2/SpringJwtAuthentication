@@ -1,11 +1,9 @@
 package com.example.springjwtauthentication.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.persistence.*;
-
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "admins")
