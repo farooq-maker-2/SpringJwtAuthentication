@@ -1,7 +1,6 @@
 package com.example.springjwtauthentication.entity;
 
 import lombok.Data;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 

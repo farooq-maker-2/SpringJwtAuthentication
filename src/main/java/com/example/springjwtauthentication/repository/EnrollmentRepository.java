@@ -20,6 +20,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE From course_student c where c.course_id =?1", nativeQuery = true)
-    void deleteCourseStudentByCourseId(@Param("courseId") Long courseId);
+    @Query(value = "DELETE From courses_course_contents c where c.course_id =?1", nativeQuery = true)
+    void deleteContent(Long courseId);
 }

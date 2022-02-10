@@ -18,11 +18,11 @@
 #RUN chmod +x wait-for-it.sh
 
 FROM openjdk:11
-ADD target/spring-boot-app.jar spring-boot-app.jar
+ADD target/app.jar app.jar
 EXPOSE 8081
 COPY scripts/wait-for-it.sh /wait-for-it.sh
 RUN chmod +x wait-for-it.sh
-ENTRYPOINT ["java", "-jar", "spring-boot-app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
 

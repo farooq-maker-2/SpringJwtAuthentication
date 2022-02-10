@@ -10,10 +10,10 @@ public class EnrollmentService {
     @Autowired
     private EnrollmentRepository enrollmentRepository;
 
-
     public void deleteEnrollments(Long courseId) {
 
-        enrollmentRepository.deleteCourseContentByCourseId(courseId);
         enrollmentRepository.deleteEnrollmentByCourseId(courseId);
+        enrollmentRepository.deleteContent(courseId);
+        enrollmentRepository.deleteCourseContentByCourseId(courseId);
     }
 }

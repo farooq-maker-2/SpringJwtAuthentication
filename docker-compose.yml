@@ -37,7 +37,7 @@ services:
       exit 0;"
 
   app:
-    image: spring-boot-app
+    image: app
     ports:
       - "8081:8081"
 
@@ -55,6 +55,6 @@ services:
       - minio
       - createbuckets
 
-    #command: sh -c './wait-for minio:9000 -- java -jar spring-boot-app.jar'
-    entrypoint: [ "/wait-for-it.sh", "database:3306",  "-t", "120", "--", "java", "-jar", "spring-boot-app.jar" ]
+    #command: sh -c './wait-for minio:9000 -- java -jar app.jar'
+    entrypoint: [ "/wait-for-it.sh", "database:3306",  "-t", "120", "--", "java", "-jar", "app.jar" ]
 
