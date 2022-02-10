@@ -34,16 +34,16 @@ public class SpringJwtAuthenticationApplication {
                         .url("https://github.com/farooq-maker-2/SpringJwtAuthentication"));
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods(String.valueOf(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")));
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/api/**")
+//                        .allowedOrigins("http://localhost:3000")
+//                        .allowedMethods(String.valueOf(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")));
+//            }
+//        };
+//    }
 
 }
