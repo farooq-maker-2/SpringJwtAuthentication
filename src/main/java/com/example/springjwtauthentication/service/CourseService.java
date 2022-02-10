@@ -14,11 +14,11 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public List<Object> findAllTimeTopTen() {
+    public List<Course> findAllTimeTopTen() {
         return courseRepository.findFirst10ByOrderByAllTimeEnrollmentsDesc();
     }
 
-    public List<Object> findTopTenTrendingCourses() {
+    public List<Course> findTopTenTrendingCourses() {
         return courseRepository.findFirst10ByOrderByTrendingEnrollmentsDesc();
     }
 

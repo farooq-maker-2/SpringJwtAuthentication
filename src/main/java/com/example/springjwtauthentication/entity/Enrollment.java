@@ -34,4 +34,9 @@ public class Enrollment {
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
+
 }

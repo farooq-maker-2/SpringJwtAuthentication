@@ -132,7 +132,7 @@ public class CourseController {
         HttpResponse<String> response = new HttpResponse<>();
         enrollmentService.deleteEnrollments(courseId);
         if (courseRepository.existsById(courseId)) {
-            courseRepository.deleteById(courseId);
+            courseRepository.deleteCourseById(courseId);
             response.setSuccess(true);
         }
         return response;

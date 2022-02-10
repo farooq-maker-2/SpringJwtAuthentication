@@ -9,17 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    public static final String deleteEnrollment = "DELETE From enrollments e where e.course_id =?1";
-
-    public static final String deleteCourseStudent = "DELETE From course_student c where c.course_id =?1";
-
     @Modifying
     @Transactional
-    @Query(value = deleteEnrollment, nativeQuery = true)
     void deleteEnrollmentByCourseId(@Param("courseId") Long courseId);
 
     @Modifying
     @Transactional
-    @Query(value = deleteCourseStudent, nativeQuery = true)
+    @Query(value = "DELETE From contents c where c.course_id =?1", nativeQuery = true)
+    void deleteCourseContentByCourseId(@Param("courseId") Long courseId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE From course_student c where c.course_id =?1", nativeQuery = true)
     void deleteCourseStudentByCourseId(@Param("courseId") Long courseId);
 }

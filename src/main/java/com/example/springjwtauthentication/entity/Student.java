@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "students")
@@ -12,11 +12,7 @@ import java.util.Set;
 public class Student extends User{
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "course_student",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private Set<Course> courses;
+    @OneToMany(mappedBy = "student")
+    private List<Enrollment> enrollments;
 
 }

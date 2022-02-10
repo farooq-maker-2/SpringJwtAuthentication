@@ -1,23 +1,17 @@
 version: '3.7'
 services:
   composedSqlContainer:
-    image: mysql #e00adb645cb5 #mysql #087c6f86492c #mysql #087c6f86492c #mysql:latest #087c6f86492c #mysql/mysql-server #mysql:5.7 #mysql/mysql-server
-    #container_name: composedSqlContainer #mysqlServerContainer
-    #restart: always
+    image: mysql
     environment:
       MYSQL_DATABASE: jwt_spring_application_docker
       MYSQL_ROOT_PASSWORD: password
-      #MYSQL_PASSWORD: password
-      #MYSQL_USERNAME: root
     ports:
       - "3308:3306"
-    #    networks:
-    #      - common-network
 
-#    volumes:
-#      # Just specify a path and let the Engine create a volume
-#      # - /var/lib/mysql
-#      - ./mysqlPersistenceVolume:/var/lib/mysql
+    volumes:
+      # Just specify a path and let the Engine create a volume
+      # - /var/lib/mysql
+      - ./mysqlPersistenceVolume:/var/lib/mysql
 
 #    healthcheck:
 #      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]

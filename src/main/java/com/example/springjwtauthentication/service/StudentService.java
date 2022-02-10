@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @Log4j2
@@ -29,45 +31,54 @@ public class StudentService {
     @Autowired
     private EnrollmentRepository enrollmentRepository;
 
-    public String enrollStudentForCourse(User student, Long courseId) {
+    public String enrollStudentForCourse(Student student, Long courseId) {
 
         Course course = courseRepository.findCourseById(courseId);
         if (course != null && student != null) {
 
-            Enrollment enrollment = Enrollment
-                    .builder()
-                    .course(course)
-                    .enrollmentDate(new Date())
-                    .build();
-            enrollmentRepository.save(enrollment);
-
-            course.getEnrollments().add(enrollment);
-            courseRepository.save(course);
-
-            Student student_ =  studentRepository.findStudentById(student.getId());
-            student_.getCourses().add(course);
-            studentRepository.save(student_);
-            return "success";
+            AtomicBoolean alreadyEnrolled = new AtomicBoolean(false);
+            student.getEnrollments().stream().forEach(enrollment -> {
+                if (enrollment.getCourse().getId().equals(courseId)) {
+                    alreadyEnrolled.set(true);
+                    return;
+                }
+            });
+            if (!alreadyEnrolled.get()) {
+                Enrollment enrollment = Enrollment
+                        .builder()
+                        .course(course).student(student)
+                        .enrollmentDate(new Date())
+                        .build();
+                enrollmentRepository.save(enrollment);
+                studentRepository.save(student);
+                return "success";
+            }
         }
         return "failure";
     }
 
-    public String optoutStudentFromCourse(User student, Long courseId) {
+    public String optoutStudentFromCourse(Student student, Long courseId) {
 
         Course course = courseRepository.findCourseById(courseId);
         if (course != null && student != null) {
-            Student student_ = studentRepository.findStudentById(student.getId());
-            student_.getCourses().remove(course);
-            studentRepository.save(student_);
+            if (course != null && student != null) {
+                List<Enrollment> enrollments = student.getEnrollments();
+                for(Enrollment enrollment: enrollments){
+                    if(enrollment.getCourse().getId() == courseId && enrollment.getStudent().getId() == student.getId()){
+                        enrollmentRepository.deleteById(enrollment.getId());
+                    }
+                }
+            }
             return "success";
         }
         return "failure";
     }
 
     public boolean optoutAndDeleteStudent(Student student) {
-        Student student_ = studentRepository.findStudentById(student.getId());
-        student_.setCourses(new HashSet<>());
-        studentRepository.delete(student_);
+        student.getEnrollments().stream().forEach(enrollment -> {
+            enrollmentRepository.deleteById(enrollment.getId());
+        });
+        studentRepository.delete(student);
         return true;
     }
 }

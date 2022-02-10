@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.example.springjwtauthentication.security.jwt.JwtHelper.getJwtUser;
 
@@ -159,15 +160,19 @@ public class CourseContentController {
     private boolean isDownloadAllowed(String header, Long courseId) {
         boolean allowed = false;
         User user = teacherRepository.findTeacherById(getJwtUser(header));
-        if(user == null){
+        if (user == null) {
             user = studentRepository.findStudentById(getJwtUser(header));
         }
         Course course = courseRepository.findCourseById(courseId);
+        AtomicBoolean isStudentAllowed = new AtomicBoolean(false);
         if (user.getRole().equals("student")) {
             Student student = studentRepository.findStudentByEmail(user.getEmail());
-            if (student.getCourses().contains(course)) {
-                allowed = true;
-            }
+            student.getEnrollments().stream().forEach(enrollment -> {
+                if (enrollment.getId().equals(courseId)) {
+                    isStudentAllowed.set(true);
+                }
+            });
+            return isStudentAllowed.get();
         } else if (user.getRole().equals("teacher")) {
             Teacher teacher = teacherRepository.findTeacherByEmail(user.getEmail());
             if (teacher.getCourses().contains(course)) {

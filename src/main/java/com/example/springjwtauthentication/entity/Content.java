@@ -35,7 +35,7 @@ public class Content {
     private String contentType;
 
     @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 

@@ -17,8 +17,7 @@ public class UserAuthorizatonFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         if (request.getServletPath().equals("/api/users/login") ||
-                request.getServletPath().equals("/api/users/register") ||
-                request.getServletPath().equals("/api/courses")) {
+                request.getServletPath().equals("/api/users/register")) {
             filterChain.doFilter(request, response);
         } else {
             JwtHelper.verifyJwtCode(request, response, filterChain);

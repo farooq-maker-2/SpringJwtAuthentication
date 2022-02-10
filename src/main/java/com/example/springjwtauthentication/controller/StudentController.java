@@ -3,7 +3,6 @@ package com.example.springjwtauthentication.controller;
 import com.example.springjwtauthentication.controller.response.HttpResponse;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Student;
-import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.mapper.CourseMapper;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.repository.StudentRepository;
@@ -69,7 +68,7 @@ public class StudentController {
                                                        Authentication authentication) {
 
         HttpResponse<String> response = new HttpResponse<>();
-        User student = studentRepository.findStudentById(studentId);
+        Student student = studentRepository.findStudentById(studentId);
         response.setMessage(studentService.enrollStudentForCourse(student, courseId));
         response.setSuccess(true);
         return response;
@@ -91,8 +90,8 @@ public class StudentController {
                                                         Authentication authentication) {
 
         HttpResponse<String> response = new HttpResponse<>();
-        User student = studentRepository.findStudentById(studentId);
-        response.setMessage(studentService.optoutStudentFromCourse(student, courseId));
+        Student student = studentRepository.findStudentById(studentId);
+        response.setMessage(studentService.optoutStudentFromCourse(student,courseId));
         response.setSuccess(true);
         return response;
     }
@@ -114,15 +113,24 @@ public class StudentController {
         HttpResponse<Set<CourseModel>> response = new HttpResponse<>();
         int pageSize = 5;
         int fromIndex = page.get() * pageSize;
-        Set<Course> courses = studentRepository.findStudentById(studentId).getCourses();
-        Set<CourseModel> courseModels = courses.stream().map(course -> CourseMapper.toModel(course)).collect(Collectors.toSet());
-        if (courseModels == null || courseModels.size() <= fromIndex) {
-            response.setData(Collections.emptySet());
+        Set<Course> courses = new HashSet<>();
+        Student student = studentRepository.findStudentById(studentId);
+
+        if (student != null) {
+            student.getEnrollments()
+                    .stream()
+                    .forEach(enrollment -> {
+                        courses.add(enrollment.getCourse());
+                    });
+            Set<CourseModel> courseModels = courses.stream().map(course -> CourseMapper.toModel(course)).collect(Collectors.toSet());
+            if (courseModels == null || courseModels.size() <= fromIndex) {
+                response.setData(Collections.emptySet());
+            }
+            List<CourseModel> coursesList = new ArrayList<>(courseModels);
+            // toIndex exclusive
+            response.setData(new HashSet<>(coursesList.subList(fromIndex, Math.min(fromIndex + pageSize, coursesList.size()))));
+            response.setSuccess(true);
         }
-        List<CourseModel> coursesList = new ArrayList<>(courseModels);
-        // toIndex exclusive
-        response.setData(new HashSet<>(coursesList.subList(fromIndex, Math.min(fromIndex + pageSize, coursesList.size()))));
-        response.setSuccess(true);
         return response;
     }
 }

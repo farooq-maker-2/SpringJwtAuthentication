@@ -13,7 +13,7 @@ public class EnrollmentService {
 
     public void deleteEnrollments(Long courseId) {
 
+        enrollmentRepository.deleteCourseContentByCourseId(courseId);
         enrollmentRepository.deleteEnrollmentByCourseId(courseId);
-        enrollmentRepository.deleteCourseStudentByCourseId(courseId);
     }
 }
