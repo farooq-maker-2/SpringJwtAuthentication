@@ -85,10 +85,12 @@ public class TeacherController {
     public HttpResponse<List<UserView>> listTeachersByName(@RequestHeader("AUTHORIZATION") String header,
                                                            @PathVariable("name") String teacherName,
                                                            @RequestParam Optional<Integer> page,
+                                                           @RequestParam Optional<Integer> pageSize,
                                                            Authentication authentication) {
 
         HttpResponse<List<UserView>> response = new HttpResponse<>();
-        List<Teacher> teachers = teacherRepository.findTeachersByFirstNameAndLastName(PageRequest.of(page.orElse(0), 5), teacherName);
+        List<Teacher> teachers = teacherRepository.
+                findByFirstNameAndLastName(/*PageRequest.of(page.orElse(0), pageSize.orElse(5)),*/ teacherName, teacherName);
         List<UserView> userViews = new ArrayList<>();
         teachers.stream().forEach(teacher -> {
             userViews.add(UserView.toUserView(teacher));
