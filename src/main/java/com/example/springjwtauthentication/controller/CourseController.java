@@ -77,10 +77,10 @@ public class CourseController {
             @ApiResponse(responseCode = "400", description = "failure")})
     @GetMapping("/courses")
     public HttpResponse<Page<CourseModel>> listAllCourses(@RequestHeader("AUTHORIZATION") String header
-            , @RequestParam Optional<Integer> page) {
+            , @RequestParam Optional<Integer> page,@RequestParam int pageSize) {
 
         HttpResponse<Page<CourseModel>> response = new HttpResponse<>();
-        Page<Course> courses = courseRepository.findAll(PageRequest.of(page.orElse(0), 5));
+        Page<Course> courses = courseRepository.findAll(PageRequest.of(page.orElse(0), pageSize));
         List<CourseModel> courseModels = courses.stream().map(course -> CourseMapper.toModel(course)).collect(Collectors.toList());
         response.setData(new PageImpl<>(courseModels));
         response.setSuccess(true);

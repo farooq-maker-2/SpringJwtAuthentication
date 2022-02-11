@@ -3,7 +3,6 @@ package com.example.springjwtauthentication.service;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Enrollment;
 import com.example.springjwtauthentication.entity.Student;
-import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.repository.EnrollmentRepository;
 import com.example.springjwtauthentication.repository.StudentRepository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 

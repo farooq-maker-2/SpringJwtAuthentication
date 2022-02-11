@@ -55,7 +55,7 @@ public class TeacherController {
     @Operation(summary = "this api is to list all teachers")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success",
-                            content = {@Content(mediaType = "application/json")}),
+                    content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "failure", content = @Content)})
     @PreAuthorize("#authentication.getAuthorities().toArray()[0].toString().equals(\"admin\")")
     @GetMapping("/teachers")
@@ -105,6 +105,7 @@ public class TeacherController {
     public HttpResponse<Set<CourseModel>> getCoursesOfTeacher(@RequestHeader("AUTHORIZATION") String header,
                                                               @PathVariable("teacherId") Long teacherId,
                                                               @RequestParam Optional<Integer> page,
+                                                              @RequestParam int pageSize,
                                                               Authentication authentication) {
 
         HttpResponse<Set<CourseModel>> response = new HttpResponse<>();
@@ -112,7 +113,6 @@ public class TeacherController {
         Set<Course> coursesOfTeacher = teacherRepository.findTeacherById(teacher.getId()).getCourses();
         Set<Course> courses = coursesOfTeacher;
         Set<CourseModel> courseModels = courses.stream().map(course -> CourseMapper.toModel(course)).collect(Collectors.toSet());
-        int pageSize = 5;
         int fromIndex = page.get() * pageSize;
         if (courses == null || courses.size() <= fromIndex) {
             response.setData(Collections.emptySet());

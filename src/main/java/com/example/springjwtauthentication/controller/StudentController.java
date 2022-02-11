@@ -40,10 +40,10 @@ public class StudentController {
     @PreAuthorize("#authentication.getAuthorities().toArray()[0].toString().equals(\"admin\")")
     @GetMapping("/students")
     public HttpResponse<Page<UserView>> listAllStudents(@RequestHeader("AUTHORIZATION") String header
-            , @RequestParam Optional<Integer> page, Authentication authentication) {
+            , @RequestParam Optional<Integer> page, @RequestParam int pageSize, Authentication authentication) {
 
         HttpResponse<Page<UserView>> response = new HttpResponse<>();
-        Page<Student> students = studentRepository.findAll(PageRequest.of(page.orElse(0), 5));
+        Page<Student> students = studentRepository.findAll(PageRequest.of(page.orElse(0), pageSize));
         List<UserView> userViews = new ArrayList<>();
         students.stream().forEach(student -> {
             userViews.add(UserView.toUserView(student));
@@ -91,7 +91,7 @@ public class StudentController {
 
         HttpResponse<String> response = new HttpResponse<>();
         Student student = studentRepository.findStudentById(studentId);
-        response.setMessage(studentService.optoutStudentFromCourse(student,courseId));
+        response.setMessage(studentService.optoutStudentFromCourse(student, courseId));
         response.setSuccess(true);
         return response;
     }
