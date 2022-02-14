@@ -129,7 +129,6 @@ public class CourseController {
                                              Authentication authentication) {
 
         HttpResponse<String> response = new HttpResponse<>();
-        //enrollmentService.deleteEnrollments(courseId);
         contentRepository.deleteContentByCourseId(courseId);
         if (courseRepository.existsById(courseId)) {
             courseRepository.deleteCourseById(courseId);

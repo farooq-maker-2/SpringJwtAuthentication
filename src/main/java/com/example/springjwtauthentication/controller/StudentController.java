@@ -113,13 +113,12 @@ public class StudentController {
         HttpResponse<Set<CourseModel>> response = new HttpResponse<>();
         int pageSize = 5;
         int fromIndex = page.get() * pageSize;
-        Set<Course> courses = new HashSet<>();
         Student student = studentRepository.findStudentById(studentId);
 
         if (student != null) {
-            courses = student.getCourses();
+            Set<Course> courses = student.getCourses();
             Set<CourseModel> courseModels = courses.stream().map(course -> CourseMapper.toModel(course)).collect(Collectors.toSet());
-            if (courseModels == null || courseModels.size() <= fromIndex) {
+            if (courseModels.size() <= fromIndex) {
                 response.setData(Collections.emptySet());
             }
             List<CourseModel> coursesList = new ArrayList<>(courseModels);
