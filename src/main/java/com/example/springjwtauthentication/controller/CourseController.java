@@ -5,6 +5,7 @@ import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.mapper.CourseMapper;
 import com.example.springjwtauthentication.model.CourseModel;
+import com.example.springjwtauthentication.repository.ContentRepository;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.repository.TeacherRepository;
 import com.example.springjwtauthentication.service.CourseService;
@@ -44,6 +45,9 @@ public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private ContentRepository contentRepository;
 
     @Operation(summary = "this api is to add a new course")
     @ApiResponses(value = {
@@ -130,6 +134,7 @@ public class CourseController {
 
         HttpResponse<String> response = new HttpResponse<>();
         enrollmentService.deleteEnrollments(courseId);
+        contentRepository.deleteContentByCourseId(courseId);
         if (courseRepository.existsById(courseId)) {
             courseRepository.deleteCourseById(courseId);
             response.setSuccess(true);

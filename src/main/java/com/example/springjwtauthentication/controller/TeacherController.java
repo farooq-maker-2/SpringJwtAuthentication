@@ -102,6 +102,7 @@ public class TeacherController {
 
     @PreAuthorize("#teacherId.toString().equals(authentication.principal) " +
             "&& #authentication.getAuthorities().toArray()[0].toString().equals(\"teacher\")" +
+            "|| #authentication.getAuthorities().toArray()[0].toString().equals(\"student\")" +
             "|| #authentication.getAuthorities().toArray()[0].toString().equals(\"admin\")")
     @GetMapping("/teachers/{teacherId}/courses")
     public HttpResponse<Set<CourseModel>> getCoursesOfTeacher(@RequestHeader("AUTHORIZATION") String header,

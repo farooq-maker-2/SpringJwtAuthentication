@@ -22,11 +22,9 @@ public class Enrollment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Schema(accessMode = READ_ONLY)
     private Long id;
 
     @Column(nullable = false)
-    @Schema(example = "23-09-1997")
     private Date enrollmentDate;
 
     @JsonIgnore

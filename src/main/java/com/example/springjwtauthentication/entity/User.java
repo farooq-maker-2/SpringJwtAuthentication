@@ -27,31 +27,24 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Schema(accessMode = READ_ONLY)
     private Long id;
 
     @Column(nullable = false)
-    @Schema(example = "muhammad")
     private String firstName;
 
     @Column(nullable = false)
-    @Schema(example = "farooq")
     private String lastName;
 
     @Column(nullable = false)
-    @Schema(example = "farooq.student@gmail.com")
     private String email;
 
     @Column(nullable = false)
-    @Schema(example = "password")
     private String password;
 
     @Column
-    @Schema(example = "activated")
     private String status = "activated";
 
     @Column(nullable = false)
-    @Schema(example = "student")
     private String role;
 
 }
