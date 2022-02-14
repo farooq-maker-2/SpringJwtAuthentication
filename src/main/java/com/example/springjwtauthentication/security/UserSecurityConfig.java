@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -47,7 +46,6 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/users/register").permitAll();
 
         http.requestMatchers().antMatchers("/api/**");
-        //http.authorizeRequests().antMatchers("/api/users/**").authenticated();
         http.authorizeRequests().antMatchers("/api/**").authenticated();
 
         http.addFilter(userAuthenticationFilter);

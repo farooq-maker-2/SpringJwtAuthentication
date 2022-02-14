@@ -91,7 +91,7 @@ public class StudentController {
 
         HttpResponse<String> response = new HttpResponse<>();
         Student student = studentRepository.findStudentById(studentId);
-        response.setMessage(studentService.optoutStudentFromCourse(student, courseId));
+        response.setMessage(studentService.optOutStudentFromCourse(student, courseId));
         response.setSuccess(true);
         return response;
     }

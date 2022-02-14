@@ -12,7 +12,6 @@ import java.util.Set;
 public class Teacher extends User {
 
     @JsonIgnore
-    //(mappedBy = "teacher") ==> this will populate courses when we call teacher.getCourses();
     @OneToMany(mappedBy = "teacher")
     private Set<Course> courses;
 

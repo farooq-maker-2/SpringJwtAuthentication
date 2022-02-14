@@ -2,10 +2,10 @@ package com.example.springjwtauthentication.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 @Entity
@@ -13,12 +13,8 @@ import java.util.Set;
 @Data
 public class Student extends User {
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "student")
-//    private List<Enrollment> enrollments;
-
     @JsonIgnore
-    @ManyToMany//(mappedBy = "student")
+    @ManyToMany
     @JoinTable(name="Student_Course"/*,joinColumns = @JoinColumn(name = "date", value = "14-02-2022")*/)
     private Set<Course> courses;
 

@@ -1,4 +1,5 @@
 package com.example.springjwtauthentication.model;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

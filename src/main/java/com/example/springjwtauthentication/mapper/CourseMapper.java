@@ -5,8 +5,6 @@ import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigInteger;
-
 public class CourseMapper {
 
     @Autowired

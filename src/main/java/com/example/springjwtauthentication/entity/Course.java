@@ -1,11 +1,9 @@
 package com.example.springjwtauthentication.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import javax.persistence.*;
 import java.util.List;
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
 @Entity
 @Table(name = "courses")
@@ -14,7 +12,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@ToString
 public class Course {
 
     @Id
@@ -37,10 +34,6 @@ public class Course {
     @JsonIgnore
     @OneToMany(mappedBy = "course")
     private List<Content> courseContents;
-
-//    @JsonIgnore
-//    @OneToMany
-//    private List<Enrollment> enrollments;
 
     @JsonIgnore
     @ManyToMany(mappedBy="courses")

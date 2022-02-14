@@ -37,17 +37,14 @@ public class UserService implements UserDetailsService {
                 user = studentRepository.findStudentByEmail(email);
             }
         }
-
         if (user == null) {
             log.error("user not found in database");
             throw new UsernameNotFoundException("Invalid Username or Password");
         } else {
             log.info("user found in the database: {}", email);
         }
-
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
-
         return new org.springframework.security.core.userdetails.User(user.getId().toString(), user.getPassword(), authorities);
 
     }
