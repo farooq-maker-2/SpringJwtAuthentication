@@ -167,8 +167,8 @@ public class CourseContentController {
         AtomicBoolean isStudentAllowed = new AtomicBoolean(false);
         if (user.getRole().equals("student")) {
             Student student = studentRepository.findStudentByEmail(user.getEmail());
-            student.getEnrollments().stream().forEach(enrollment -> {
-                if (enrollment.getId().equals(courseId)) {
+            student.getCourses().stream().forEach(c -> {
+                if (c.getId().equals(courseId)) {
                     isStudentAllowed.set(true);
                 }
             });

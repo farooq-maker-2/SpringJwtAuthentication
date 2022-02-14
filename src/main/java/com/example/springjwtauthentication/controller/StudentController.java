@@ -117,11 +117,7 @@ public class StudentController {
         Student student = studentRepository.findStudentById(studentId);
 
         if (student != null) {
-            student.getEnrollments()
-                    .stream()
-                    .forEach(enrollment -> {
-                        courses.add(enrollment.getCourse());
-                    });
+            courses = student.getCourses();
             Set<CourseModel> courseModels = courses.stream().map(course -> CourseMapper.toModel(course)).collect(Collectors.toSet());
             if (courseModels == null || courseModels.size() <= fromIndex) {
                 response.setData(Collections.emptySet());

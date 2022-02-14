@@ -38,8 +38,12 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Content> courseContents;
 
+//    @JsonIgnore
+//    @OneToMany
+//    private List<Enrollment> enrollments;
+
     @JsonIgnore
-    @OneToMany
-    private List<Enrollment> enrollments;
+    @ManyToMany(mappedBy="courses")
+    private List<Student> students;
 }
 

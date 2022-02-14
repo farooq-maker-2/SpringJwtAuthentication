@@ -9,7 +9,6 @@ import com.example.springjwtauthentication.repository.ContentRepository;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.repository.TeacherRepository;
 import com.example.springjwtauthentication.service.CourseService;
-import com.example.springjwtauthentication.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,9 +35,6 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
-
-    @Autowired
-    private EnrollmentService enrollmentService;
 
     @Autowired
     private TeacherRepository teacherRepository;
@@ -133,7 +129,7 @@ public class CourseController {
                                              Authentication authentication) {
 
         HttpResponse<String> response = new HttpResponse<>();
-        enrollmentService.deleteEnrollments(courseId);
+        //enrollmentService.deleteEnrollments(courseId);
         contentRepository.deleteContentByCourseId(courseId);
         if (courseRepository.existsById(courseId)) {
             courseRepository.deleteCourseById(courseId);
