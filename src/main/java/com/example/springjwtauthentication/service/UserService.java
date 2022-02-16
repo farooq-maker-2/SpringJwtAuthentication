@@ -26,9 +26,9 @@ import java.util.Collection;
 public class UserService implements UserDetailsService {
 
 
-    private AdminRepository adminRepository;
-    private TeacherRepository teacherRepository;
-    private StudentRepository studentRepository;
+    private final AdminRepository adminRepository;
+    private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override

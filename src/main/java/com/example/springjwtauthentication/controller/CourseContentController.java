@@ -3,7 +3,6 @@ package com.example.springjwtauthentication.controller;
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
 import com.example.springjwtauthentication.controller.response.HttpResponse;
 import com.example.springjwtauthentication.entity.*;
-import com.example.springjwtauthentication.mapper.ContentMapper;
 import com.example.springjwtauthentication.model.ContentModel;
 import com.example.springjwtauthentication.service.*;
 import com.google.api.client.util.IOUtils;
@@ -60,7 +59,7 @@ public class CourseContentController {
             Optional<Course> course = courseService.findCourseById(courseId);
 
             if (teacher.isPresent() && teacher.get().getCourses().contains(course)) {
-                ContentModel content = ContentModel
+                Content content = Content
                         .builder()
                         .fileName(file.getOriginalFilename())
                         .contentType(file.getContentType())
@@ -71,10 +70,9 @@ public class CourseContentController {
                     if (course.isPresent()) {
                         Path path = Path.of(course.get().getCourseName() + "/" + file.getOriginalFilename());
                         minioService.upload(path, file.getInputStream(), file.getContentType());
-                        Content contentEntity = ContentMapper.toEntity(content);
-                        contentEntity.setCourse(course.get());
-                        courseContentService.saveCourseContent(contentEntity);
-                        course.get().getCourseContents().add(contentEntity);
+                        content.setCourse(course.get());
+                        courseContentService.saveCourseContent(content);
+                        course.get().getCourseContents().add(content);
                         courseService.saveCourse(course.get());
                         response.setSuccess(true);
                     }

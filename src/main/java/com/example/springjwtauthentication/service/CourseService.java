@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CourseService {
 
-    private CourseRepository courseRepository;
-    private ContentRepository contentRepository;
-    private TeacherRepository teacherRepository;
+    private final CourseRepository courseRepository;
+    private final ContentRepository contentRepository;
+    private final TeacherRepository teacherRepository;
 
     public HttpResponse<List<CourseModel>> findAllTimeTopTen() {
 

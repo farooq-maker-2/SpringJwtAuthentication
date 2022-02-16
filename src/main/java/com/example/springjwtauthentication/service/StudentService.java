@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class StudentService {
 
-    private StudentRepository studentRepository;
-    private CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
     public HttpResponse<String> enrollStudentForCourse(Long studentId, Long courseId) {
 
