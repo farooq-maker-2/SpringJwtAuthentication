@@ -1,13 +1,15 @@
 package com.example.springjwtauthentication.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import java.util.Set;
+import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "students")
 @Data

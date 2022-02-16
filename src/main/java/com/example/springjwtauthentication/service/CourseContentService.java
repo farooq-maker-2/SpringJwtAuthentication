@@ -6,19 +6,18 @@ import com.example.springjwtauthentication.mapper.ContentMapper;
 import com.example.springjwtauthentication.model.ContentModel;
 import com.example.springjwtauthentication.repository.ContentRepository;
 import com.example.springjwtauthentication.repository.CourseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class CourseContentService {
 
-    @Autowired
-    private ContentRepository courseContentRepository;
-
-    @Autowired
-    private CourseRepository courseRepository;
+    private final ContentRepository courseContentRepository;
+    private final CourseRepository courseRepository;
 
     public Content saveCourseContent(Content content) {
         return courseContentRepository.save(content);
@@ -26,8 +25,8 @@ public class CourseContentService {
 
     public List<ContentModel> getCourseContents(Long courseId) {
 
-        Course course = courseRepository.findCourseById(courseId);
-        List<Content> contents = course.getCourseContents();
+        Optional<Course> course = courseRepository.findById(courseId);
+        List<Content> contents = course.get().getCourseContents();
         return contents.stream().map(content -> ContentMapper.toModel(content)).collect(Collectors.toList());
     }
 }

@@ -1,8 +1,8 @@
 package com.example.springjwtauthentication.mapper;
 
+import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.entity.Student;
 import com.example.springjwtauthentication.entity.Teacher;
-import com.example.springjwtauthentication.entity.User;
 
 public class UserMapper {
 

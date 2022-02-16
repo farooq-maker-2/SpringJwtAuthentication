@@ -2,13 +2,22 @@ package com.example.springjwtauthentication.mapper;
 
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.model.CourseModel;
-import com.example.springjwtauthentication.repository.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Optional;
 
 public class CourseMapper {
 
-    @Autowired
-    private static TeacherRepository teacherRepository;
+    public static CourseModel toModel(Optional<Course> course) {
+
+        if (course.isPresent()) {
+            return CourseModel.builder()
+                    .id(course.get().getId())
+                    .courseName(course.get().getCourseName())
+                    .description(course.get().getDescription())
+                    .level(course.get().getLevel())
+                    .build();
+        }
+        return null;
+    }
 
     public static CourseModel toModel(Course course) {
 

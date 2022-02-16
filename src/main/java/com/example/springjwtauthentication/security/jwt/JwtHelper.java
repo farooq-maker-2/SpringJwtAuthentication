@@ -47,7 +47,6 @@ public class JwtHelper {
     public static void verifyJwtCode(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
 
         String authorizationHeader = request.getHeader("AUTHORIZATION");
-        System.out.println(request.getParameter("page"));
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
             try {
@@ -81,7 +80,7 @@ public class JwtHelper {
 
     }
 
-    public static Long getJwtUser(String token) {
+    public static Long getUserFromJwt(String token) {
 
         if (token != null && token.startsWith("Bearer ")) {
 

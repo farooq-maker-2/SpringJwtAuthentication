@@ -4,7 +4,6 @@ import com.example.springjwtauthentication.security.filter.UserAuthenticationFil
 import com.example.springjwtauthentication.security.filter.UserAuthorizatonFilter;
 import com.example.springjwtauthentication.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,14 +19,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private final UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private CorsConfiguration corsConfig;
+    private final PasswordEncoder passwordEncoder;
+    private final CorsConfiguration corsConfig;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
