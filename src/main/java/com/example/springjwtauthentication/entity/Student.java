@@ -17,7 +17,7 @@ public class Student extends User {
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name="Student_Course"/*,joinColumns = @JoinColumn(name = "date", value = "14-02-2022")*/)
+    @JoinTable(name="student_course"/*,joinColumns = @JoinColumn(name = "date", value = "14-02-2022")*/)
     private Set<Course> courses;
 
 }

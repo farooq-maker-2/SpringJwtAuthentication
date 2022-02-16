@@ -76,8 +76,7 @@ public class StudentController {
     @RolesAllowed({"STUDENT", "ADMIN"})
     public HttpResponse<Set<CourseModel>> getCoursesOfStudent(@RequestHeader("AUTHORIZATION") String header,
                                                               @PathVariable("studentId") Long studentId,
-                                                              @RequestParam Optional<Integer> page,
-                                                              Authentication authentication) {
+                                                              @RequestParam Optional<Integer> page) {
 
         return studentService.getCoursesOfStudent(studentId,page);
     }

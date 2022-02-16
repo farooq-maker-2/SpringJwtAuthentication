@@ -1,6 +1,5 @@
 package com.example.springjwtauthentication.view.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginCreds {
 
-    @Schema(example = "farooq.teacher@gmail.com")
     private String email;
-
-    @Schema(example = "password")
     private String password;
 }
