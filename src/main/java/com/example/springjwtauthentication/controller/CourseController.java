@@ -1,5 +1,6 @@
 package com.example.springjwtauthentication.controller;
 
+import com.example.springjwtauthentication.annotations.IsValidTeacher;
 import com.example.springjwtauthentication.controller.response.HttpResponse;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.model.CourseModel;
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
@@ -27,7 +27,7 @@ public class CourseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @PreAuthorize("#teacherId.toString().equals(authentication.principal)")
+    @IsValidTeacher
     @RolesAllowed({"TEACHER"})
     @PostMapping(path = "/teachers/{teacherId}/courses", produces = "application/json", consumes = "application/json")
     public HttpResponse<Course> addCourse(@PathVariable("teacherId") Long teacherId,

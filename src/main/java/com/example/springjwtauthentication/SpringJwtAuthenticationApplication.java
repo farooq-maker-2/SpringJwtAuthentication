@@ -10,6 +10,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
+/**
+ * The prePostEnabled property enables Spring Security pre/post annotations.
+ * The securedEnabled property determines if the @Secured annotation should be enabled.
+ * The jsr250Enabled property allows us to use the @RoleAllowed annotation.
+ **/
+
 @SpringBootApplication
 @OpenAPIDefinition
 @EnableGlobalMethodSecurity(

@@ -37,17 +37,19 @@ services:
       exit 0;"
 
   app:
-    image: app
+    image: application
+
     ports:
       - "8081:8081"
 
     environment:
-      #SPRING_DATASOURCE_URL:jdbc: jdbc:mysql://localhost:3310/jwt_spring_application_docker?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
+      #SPRING_DATASOURCE_URL:jdbc: jdbc:mysql://localhost:3307/jwt_spring_application_docker?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
       SPRING_DATASOURCE_URL:jdbc: jdbc:mysql://database:3306/jwt_spring_application_docker?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
       SPRING_DATASOURCE_PASSWORD: "password"
       SPRING_DATASOURCE_USERNAME: "root"
     build:
       context: .
+      target: application
       dockerfile: Dockerfile
 
     depends_on:
@@ -56,5 +58,5 @@ services:
       - createbuckets
 
     #command: sh -c './wait-for minio:9000 -- java -jar app.jar'
-    entrypoint: [ "/wait-for-it.sh", "database:3306",  "-t", "120", "--", "java", "-jar", "app.jar" ]
+    entrypoint: [ "/app/wait-for-it.sh", "database:3306",  "-t", "120", "--", "java", "-jar", "app.jar" ]
 

@@ -1,5 +1,6 @@
 package com.example.springjwtauthentication.controller;
 
+import com.example.springjwtauthentication.annotations.IsValidStudent;
 import com.example.springjwtauthentication.controller.response.HttpResponse;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.StudentService;
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
@@ -41,7 +41,7 @@ public class StudentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @PreAuthorize("#studentId.toString().equals(authentication.principal)")
+    @IsValidStudent
     @PostMapping(path = "/students/{studentId}/courses/{courseId}", produces = "application/json")
     public HttpResponse<String> enrollStudentForCourse(@RequestHeader("AUTHORIZATION") String header,
                                                        @PathVariable("studentId") Long studentId,
@@ -57,7 +57,7 @@ public class StudentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @PreAuthorize("#studentId.toString().equals(authentication.principal)")
+    @IsValidStudent
     @RolesAllowed({"STUDENT", "ADMIN"})
     public HttpResponse<String> optOutStudentFormCourse(@RequestHeader("AUTHORIZATION") String header,
                                                         @PathVariable("studentId") Long studentId,
@@ -72,7 +72,7 @@ public class StudentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @PreAuthorize("#studentId.toString().equals(authentication.principal)")
+    @IsValidStudent
     @RolesAllowed({"STUDENT", "ADMIN"})
     public HttpResponse<Set<CourseModel>> getCoursesOfStudent(@RequestHeader("AUTHORIZATION") String header,
                                                               @PathVariable("studentId") Long studentId,

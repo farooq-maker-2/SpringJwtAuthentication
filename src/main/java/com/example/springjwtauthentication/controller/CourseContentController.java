@@ -1,5 +1,6 @@
 package com.example.springjwtauthentication.controller;
 
+import com.example.springjwtauthentication.annotations.IsValidTeacher;
 import com.example.springjwtauthentication.controller.response.HttpResponse;
 import com.example.springjwtauthentication.entity.*;
 import com.example.springjwtauthentication.mapper.ContentMapper;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +44,7 @@ public class CourseContentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @PreAuthorize("#teacherId.toString().equals(authentication.principal)")
+    @IsValidTeacher
     @RolesAllowed({"TEACHER"})
     @PostMapping(path = "/teachers/{teacherId}/courses/{courseId}/contents", produces = "application/json")
     public HttpResponse<String> uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
