@@ -1,16 +1,15 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidStudent;
-import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.StudentService;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.view.response.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.Optional;
@@ -45,8 +44,7 @@ public class StudentController {
     @PostMapping(path = "/students/{studentId}/courses/{courseId}", produces = "application/json")
     public HttpResponse<String> enrollStudentForCourse(@RequestHeader("AUTHORIZATION") String header,
                                                        @PathVariable("studentId") Long studentId,
-                                                       @PathVariable("courseId") Long courseId,
-                                                       Authentication authentication) {
+                                                       @PathVariable("courseId") Long courseId) {
 
         return studentService.enrollStudentForCourse(studentId, courseId);
     }
@@ -61,8 +59,7 @@ public class StudentController {
     @RolesAllowed({"STUDENT", "ADMIN"})
     public HttpResponse<String> optOutStudentFormCourse(@RequestHeader("AUTHORIZATION") String header,
                                                         @PathVariable("studentId") Long studentId,
-                                                        @PathVariable("courseId") Long courseId,
-                                                        Authentication authentication) {
+                                                        @PathVariable("courseId") Long courseId) {
 
         return studentService.optOutStudentFromCourse(studentId,courseId);
     }

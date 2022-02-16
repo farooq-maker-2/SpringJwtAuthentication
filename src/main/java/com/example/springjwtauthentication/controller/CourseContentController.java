@@ -1,10 +1,10 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
-import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.*;
 import com.example.springjwtauthentication.model.ContentModel;
 import com.example.springjwtauthentication.service.*;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.google.api.client.util.IOUtils;
 import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.security.RolesAllowed;
@@ -49,8 +48,7 @@ public class CourseContentController {
     public HttpResponse<String> uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
                                                     @PathVariable("teacherId") Long teacherId,
                                                     @PathVariable("courseId") Long courseId,
-                                                    @RequestParam("file") MultipartFile file,
-                                                    Authentication authentication) {
+                                                    @RequestParam("file") MultipartFile file) {
 
 
         HttpResponse<String> response = new HttpResponse<>();

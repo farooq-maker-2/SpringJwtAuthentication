@@ -1,16 +1,15 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
-import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.TeacherService;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.view.response.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -29,8 +28,7 @@ public class TeacherController {
     @IsValidTeacher
     @PutMapping(path = "/teachers/{teacherId}/deactivate", produces = "application/json")
     public HttpResponse<String> deactivateTeacher(@RequestHeader("AUTHORIZATION") String header,
-                                                  @PathVariable("teacherId") Long teacherId,
-                                                  Authentication authentication) {
+                                                  @PathVariable("teacherId") Long teacherId) {
 
         return teacherService.deactivateTeacher(teacherId);
     }
@@ -42,8 +40,7 @@ public class TeacherController {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
     public HttpResponse<Page<UserView>> listAllTeachers(@RequestHeader("AUTHORIZATION") String header,
-                                                        @RequestParam Optional<Integer> page,
-                                                        Authentication authentication) {
+                                                        @RequestParam Optional<Integer> page) {
 
         return teacherService.listAllTeachers(page);
     }
@@ -57,8 +54,7 @@ public class TeacherController {
     public HttpResponse<List<UserView>> listTeachersByName(@RequestHeader("AUTHORIZATION") String header,
                                                            @PathVariable("name") String teacherName,
                                                            @RequestParam Optional<Integer> page,
-                                                           @RequestParam Optional<Integer> pageSize,
-                                                           Authentication authentication) {
+                                                           @RequestParam Optional<Integer> pageSize) {
 
         return teacherService.listTeachersByName(teacherName, teacherName);
     }
@@ -69,8 +65,7 @@ public class TeacherController {
     public HttpResponse<Set<CourseModel>> getCoursesOfTeacher(@RequestHeader("AUTHORIZATION") String header,
                                                               @PathVariable("teacherId") Long teacherId,
                                                               @RequestParam Optional<Integer> page,
-                                                              @RequestParam Optional<Integer> pageSize,
-                                                              Authentication authentication) {
+                                                              @RequestParam Optional<Integer> pageSize) {
 
         return teacherService.getCoursesOfTeacher(teacherId, page, pageSize);
     }

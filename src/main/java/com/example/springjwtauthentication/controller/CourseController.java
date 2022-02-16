@@ -1,16 +1,15 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
-import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.CourseService;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -32,8 +31,7 @@ public class CourseController {
     @PostMapping(path = "/teachers/{teacherId}/courses", produces = "application/json", consumes = "application/json")
     public HttpResponse<Course> addCourse(@PathVariable("teacherId") Long teacherId,
                                           @RequestHeader("AUTHORIZATION") String header,
-                                          @RequestBody Course course,
-                                          Authentication authentication) {
+                                          @RequestBody Course course) {
 
         return courseService.addCourse(course, teacherId);
     }
@@ -78,8 +76,7 @@ public class CourseController {
             @ApiResponse(responseCode = "400", description = "failure")})
     @DeleteMapping(path = "/courses/{courseId}", produces = "application/json")
     public HttpResponse<String> DeleteCourse(@RequestHeader("AUTHORIZATION") String header,
-                                             @PathVariable("courseId") Long courseId,
-                                             Authentication authentication) {
+                                             @PathVariable("courseId") Long courseId) {
 
         return courseService.deleteCourse(courseId);
     }

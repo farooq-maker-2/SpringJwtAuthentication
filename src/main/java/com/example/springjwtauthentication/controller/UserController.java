@@ -52,8 +52,7 @@ public class UserController {
     @DeleteMapping(path = "/users/{userId}/deactivate/{role}", produces = "application/json")
     public HttpResponse<Boolean> deactivateUser(@RequestHeader("AUTHORIZATION") String header,
                                                 @PathVariable("userId") Long userId,
-                                                @PathVariable("role") String role,
-                                                Authentication authentication) {
+                                                @PathVariable("role") String role) {
 
         return studentService.optOutAndDeleteStudent(userId);
     }
