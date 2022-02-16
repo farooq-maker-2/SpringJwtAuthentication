@@ -19,14 +19,14 @@ public class CourseContentService {
     private final ContentRepository courseContentRepository;
     private final CourseRepository courseRepository;
 
-    public Content saveCourseContent(Content content) {
-        return courseContentRepository.save(content);
+    public void saveCourseContent(Content content) {
+        courseContentRepository.save(content);
     }
 
     public List<ContentModel> getCourseContents(Long courseId) {
 
         Optional<Course> course = courseRepository.findById(courseId);
         List<Content> contents = course.get().getCourseContents();
-        return contents.stream().map(content -> ContentMapper.toModel(content)).collect(Collectors.toList());
+        return contents.stream().map(ContentMapper::toModel).collect(Collectors.toList());
     }
 }

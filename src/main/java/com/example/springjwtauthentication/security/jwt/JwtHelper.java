@@ -13,14 +13,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.client.ResourceAccessException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -77,7 +75,6 @@ public class JwtHelper {
         } else {
             exceptionHandler(new Exception(), response);
         }
-
     }
 
     public static Long getUserFromJwt(String token) {

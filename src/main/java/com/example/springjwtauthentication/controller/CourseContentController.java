@@ -38,12 +38,12 @@ public class CourseContentController {
     private final StudentService studentService;
     private final AdminService adminService;
 
+    @IsValidTeacher
+    @RolesAllowed({"TEACHER"})
     @Operation(summary = "this api is to upload course content file")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @IsValidTeacher
-    @RolesAllowed({"TEACHER"})
     @PostMapping(path = "/teachers/{teacherId}/courses/{courseId}/contents", produces = "application/json")
     public HttpResponse<String> uploadCourseContent(@RequestHeader("AUTHORIZATION") String header,
                                                     @PathVariable("teacherId") Long teacherId,
@@ -102,9 +102,7 @@ public class CourseContentController {
         HttpResponse<List<ContentModel>> response = new HttpResponse<>();
         if (isDownloadAllowed(header, courseId)) {
             Optional<Course> course = courseService.findCourseById(courseId);
-            if (course.isPresent()) {
-                response.setData(courseContentService.getCourseContents(course.get().getId()));
-            }
+            course.ifPresent(value -> response.setData(courseContentService.getCourseContents(value.getId())));
         } else {
             throw new AccessDeniedException("403:: forbidden");
         }
@@ -122,13 +120,15 @@ public class CourseContentController {
             InputStream inputStream = null;
             try {
                 Optional<Course> course = courseService.findCourseById(courseId);
-                inputStream = minioService.get(Path.of(course.get().getCourseName() + "/" + fileName));
-                // Set the content type and attachment header.
-                response.addHeader("Content-disposition", "attachment;filename=" + fileName);
-                response.setContentType(URLConnection.guessContentTypeFromName(fileName));
-                // Copy the stream to the response's output stream.
-                IOUtils.copy(inputStream, response.getOutputStream());
-                response.flushBuffer();
+                if (course.isPresent()) {
+                    inputStream = minioService.get(Path.of(course.get().getCourseName() + "/" + fileName));
+                    // Set the content type and attachment header.
+                    response.addHeader("Content-disposition", "attachment;filename=" + fileName);
+                    response.setContentType(URLConnection.guessContentTypeFromName(fileName));
+                    // Copy the stream to the response's output stream.
+                    IOUtils.copy(inputStream, response.getOutputStream());
+                    response.flushBuffer();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -144,19 +144,21 @@ public class CourseContentController {
         Optional<Admin> admin = adminService.findAdminById(getUserFromJwt(header));
         Optional<Course> course = courseService.findCourseById(courseId);
         AtomicBoolean isStudentAllowed = new AtomicBoolean(false);
-        if (student.isPresent()) {
-            student.get().getCourses().stream().forEach(c -> {
-                if (c.getId().equals(courseId)) {
-                    isStudentAllowed.set(true);
+        if (course.isPresent()) {
+            if (student.isPresent()) {
+                student.get().getCourses().forEach(c -> {
+                    if (c.getId().equals(courseId)) {
+                        isStudentAllowed.set(true);
+                    }
+                });
+                return isStudentAllowed.get();
+            } else if (teacher.isPresent()) {
+                if (teacher.get().getCourses().contains(course.get())) {
+                    allowed = true;
                 }
-            });
-            return isStudentAllowed.get();
-        } else if (teacher.isPresent()) {
-            if (teacher.get().getCourses().contains(course)) {
+            } else if (admin.isPresent()) {
                 allowed = true;
             }
-        } else if (admin.isPresent()) {
-            allowed = true;
         }
         return allowed;
     }
@@ -165,15 +167,17 @@ public class CourseContentController {
         boolean allowed = false;
         Optional<Teacher> user = teacherService.findTeacherById(getUserFromJwt(header));
         Optional<Course> course = courseService.findCourseById(courseId);
-        if (user.isPresent() && user.get().getRole().equals("student")) {
-            return false;
-        } else if (user.isPresent() && user.get().getRole().equals("teacher")) {
-            Teacher teacher = teacherService.findTeacherByEmail(user.get().getEmail());
-            if (teacher.getCourses().contains(course)) {
+        if (course.isPresent()) {
+            if (user.isPresent() && user.get().getRole().equals("student")) {
+                return false;
+            } else if (user.isPresent() && user.get().getRole().equals("teacher")) {
+                Teacher teacher = teacherService.findTeacherByEmail(user.get().getEmail());
+                if (teacher.getCourses().contains(course.get())) {
+                    allowed = true;
+                }
+            } else if (user.get().getRole().equals("admin")) {
                 allowed = true;
             }
-        } else if (user.get().getRole().equals("admin")) {
-            allowed = true;
         }
         return allowed;
     }

@@ -25,7 +25,6 @@ import java.util.Collection;
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
 
-
     private final AdminRepository adminRepository;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;

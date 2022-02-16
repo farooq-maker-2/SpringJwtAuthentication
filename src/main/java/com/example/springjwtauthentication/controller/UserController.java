@@ -1,16 +1,15 @@
 package com.example.springjwtauthentication.controller;
 
-import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.view.request.LoginCreds;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.view.response.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 

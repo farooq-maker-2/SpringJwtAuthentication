@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ public class StudentService {
         if (course.isPresent() && student.isPresent()) {
 
             AtomicBoolean alreadyEnrolled = new AtomicBoolean(false);
-            student.get().getCourses().stream().forEach(c -> {
+            student.get().getCourses().forEach(c -> {
                 if (c.getId().equals(courseId)) {
                     alreadyEnrolled.set(true);
                     return;
