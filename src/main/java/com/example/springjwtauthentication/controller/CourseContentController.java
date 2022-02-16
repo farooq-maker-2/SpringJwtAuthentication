@@ -1,7 +1,7 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
-import com.example.springjwtauthentication.controller.response.HttpResponse;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.*;
 import com.example.springjwtauthentication.model.ContentModel;
 import com.example.springjwtauthentication.service.*;

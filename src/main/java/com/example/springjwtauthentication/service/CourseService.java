@@ -1,6 +1,6 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.controller.response.HttpResponse;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Teacher;
 import com.example.springjwtauthentication.mapper.CourseMapper;

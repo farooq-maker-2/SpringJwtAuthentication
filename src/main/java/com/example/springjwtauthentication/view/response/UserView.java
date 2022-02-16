@@ -1,4 +1,4 @@
-package com.example.springjwtauthentication.view;
+package com.example.springjwtauthentication.view.response;
 
 import com.example.springjwtauthentication.entity.Admin;
 import com.example.springjwtauthentication.entity.Student;

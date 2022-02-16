@@ -1,13 +1,13 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.controller.response.HttpResponse;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.mapper.UserMapper;
 import com.example.springjwtauthentication.repository.AdminRepository;
 import com.example.springjwtauthentication.repository.StudentRepository;
 import com.example.springjwtauthentication.repository.TeacherRepository;
-import com.example.springjwtauthentication.utils.LoginCreds;
-import com.example.springjwtauthentication.view.UserView;
+import com.example.springjwtauthentication.view.request.LoginCreds;
+import com.example.springjwtauthentication.view.response.UserView;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;

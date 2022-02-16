@@ -1,11 +1,11 @@
 package com.example.springjwtauthentication.controller;
 
-import com.example.springjwtauthentication.controller.response.HttpResponse;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
-import com.example.springjwtauthentication.utils.LoginCreds;
-import com.example.springjwtauthentication.view.UserView;
+import com.example.springjwtauthentication.view.request.LoginCreds;
+import com.example.springjwtauthentication.view.response.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

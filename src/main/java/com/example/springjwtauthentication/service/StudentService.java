@@ -1,13 +1,13 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.controller.response.HttpResponse;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.Course;
 import com.example.springjwtauthentication.entity.Student;
 import com.example.springjwtauthentication.mapper.CourseMapper;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.repository.CourseRepository;
 import com.example.springjwtauthentication.repository.StudentRepository;
-import com.example.springjwtauthentication.view.UserView;
+import com.example.springjwtauthentication.view.response.UserView;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;

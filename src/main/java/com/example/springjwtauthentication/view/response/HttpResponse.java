@@ -1,4 +1,4 @@
-package com.example.springjwtauthentication.controller.response;
+package com.example.springjwtauthentication.view.response;
 
 import lombok.Getter;
 import lombok.Setter;

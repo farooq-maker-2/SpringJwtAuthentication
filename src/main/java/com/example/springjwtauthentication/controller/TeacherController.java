@@ -1,10 +1,10 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
-import com.example.springjwtauthentication.controller.response.HttpResponse;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.TeacherService;
-import com.example.springjwtauthentication.view.UserView;
+import com.example.springjwtauthentication.view.response.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
