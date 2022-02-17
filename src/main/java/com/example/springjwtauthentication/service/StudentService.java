@@ -68,7 +68,7 @@ public class StudentService {
                 }
             }
             if (success) {
-                student.get().getCourses().remove(course);
+                student.get().getCourses().remove(course.get());
                 studentRepository.save(student.get());
                 response.setSuccess(true);
             }

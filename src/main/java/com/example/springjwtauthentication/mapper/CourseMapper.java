@@ -30,6 +30,7 @@ public class CourseMapper {
     }
 
     public static Course toEntity(CourseModel course) {
+
         return Course.builder()
                 .id(course.getId())
                 .courseName(course.getCourseName())

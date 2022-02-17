@@ -6,6 +6,7 @@ import com.example.springjwtauthentication.model.ContentModel;
 public class ContentMapper {
 
     public static ContentModel toModel(Content content) {
+
         return ContentModel.builder()
                 .id(content.getId())
                 .contentType(content.getContentType())
@@ -15,6 +16,7 @@ public class ContentMapper {
     }
 
     public static Content toEntity(ContentModel content) {
+
         return Content.builder()
                 .contentType(content.getContentType())
                 .description(content.getDescription())

@@ -50,7 +50,6 @@ public class CourseContentController {
                                                     @PathVariable("courseId") Long courseId,
                                                     @RequestParam("file") MultipartFile file) {
 
-
         HttpResponse<String> response = new HttpResponse<>();
         if (isUploadAllowed(header, courseId)) {
             Optional<Teacher> teacher = teacherService.findTeacherById(teacherId);
@@ -138,6 +137,7 @@ public class CourseContentController {
     }
 
     private boolean isDownloadAllowed(String header, Long courseId) {
+
         boolean allowed = false;
         Optional<Teacher> teacher = teacherService.findTeacherById(getUserFromJwt(header));
         Optional<Student> student = studentService.findStudentById(getUserFromJwt(header));
@@ -164,6 +164,7 @@ public class CourseContentController {
     }
 
     private boolean isUploadAllowed(String header, Long courseId) {
+
         boolean allowed = false;
         Optional<Teacher> user = teacherService.findTeacherById(getUserFromJwt(header));
         Optional<Course> course = courseService.findCourseById(courseId);

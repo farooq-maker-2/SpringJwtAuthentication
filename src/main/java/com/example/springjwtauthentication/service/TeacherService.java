@@ -24,6 +24,7 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
 
     public HttpResponse<String> deactivateTeacher(Long teacherId) {
+
         HttpResponse<String> response = new HttpResponse<>();
         Optional<Teacher> teacher = teacherRepository.findById(teacherId);
         if (teacher.isPresent()) {
@@ -35,6 +36,7 @@ public class TeacherService {
     }
 
     public HttpResponse<Page<UserView>> listAllTeachers(Optional<Integer> page) {
+
         HttpResponse<Page<UserView>> response = new HttpResponse<>();
         List<UserView> userViews = new ArrayList<>();
         Page<Teacher> teachers = teacherRepository.findAll(PageRequest.of(page.orElse(0), 5));

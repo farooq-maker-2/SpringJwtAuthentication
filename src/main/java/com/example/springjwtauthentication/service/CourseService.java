@@ -51,6 +51,7 @@ public class CourseService {
     }
 
     public HttpResponse<Course> addCourse(Course course, Long teacherId) {
+
         HttpResponse<Course> response = new HttpResponse<>();
         Optional<Teacher> teacher = teacherRepository.findById(teacherId);
         if (teacher.isPresent()) {

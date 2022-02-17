@@ -7,6 +7,7 @@ import com.example.springjwtauthentication.model.TeacherModel;
 public class TeacherMapper {
 
     private static TeacherModel toModel(User teacher) {
+
         return TeacherModel.builder()
                 .id(teacher.getId())
                 .email(teacher.getEmail())
@@ -30,6 +31,7 @@ public class TeacherMapper {
     }
 
     public static User toEntity(User teacher) {
+
         return User.builder()
                 .id(teacher.getId())
                 .email(teacher.getEmail())

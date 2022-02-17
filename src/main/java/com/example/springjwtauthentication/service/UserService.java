@@ -67,6 +67,7 @@ public class UserService implements UserDetailsService {
     }
 
     public HttpResponse<Boolean> registerUser(User user) {
+
         HttpResponse<Boolean> response = new HttpResponse<>();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRole().equalsIgnoreCase("student")) {

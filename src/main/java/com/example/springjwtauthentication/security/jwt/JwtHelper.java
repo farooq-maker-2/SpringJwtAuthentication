@@ -97,6 +97,7 @@ public class JwtHelper {
     }
 
     public static void exceptionHandler(Exception exception, HttpServletResponse response) {
+
         log.error("Error logging in : {} ", exception.getMessage());
         response.setHeader("error", exception.getMessage());
         response.setStatus(FORBIDDEN.value());
