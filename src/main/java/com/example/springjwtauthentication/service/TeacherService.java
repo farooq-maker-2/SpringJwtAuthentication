@@ -66,7 +66,7 @@ public class TeacherService {
     public HttpResponse<Set<CourseModel>> getCoursesOfTeacher(Long teacherId, Optional<Integer> page, Optional<Integer> pageSize) {
 
         HttpResponse<Set<CourseModel>> response = new HttpResponse<>();
-        Optional<Teacher> teacher = teacherRepository.findById(teacherId);//.findTeacherById(teacherId);
+        Optional<Teacher> teacher = teacherRepository.findById(teacherId);
         if (teacher.isPresent()) {
             Set<Course> courses = teacher.get().getCourses();
             Set<CourseModel> courseModels = courses.stream().map(CourseMapper::toModel).collect(Collectors.toSet());
