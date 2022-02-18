@@ -55,7 +55,7 @@ public class CourseContentController {
             Optional<Teacher> teacher = teacherService.findTeacherById(teacherId);
             Optional<Course> course = courseService.findCourseById(courseId);
 
-            if (teacher.isPresent() && teacher.get().getCourses().contains(course)) {
+            if (teacher.isPresent() && teacher.get().getCourses().contains(course.get())) {
                 Content content = Content
                         .builder()
                         .fileName(file.getOriginalFilename())

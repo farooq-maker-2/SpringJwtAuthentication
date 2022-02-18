@@ -1,6 +1,7 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidStudent;
+import com.example.springjwtauthentication.annotations.IsValidStudentOrAdmin;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.view.response.HttpResponse;
@@ -55,7 +56,7 @@ public class StudentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @IsValidStudent
+    @IsValidStudentOrAdmin
     @RolesAllowed({"STUDENT", "ADMIN"})
     public HttpResponse<String> optOutStudentFormCourse(@RequestHeader("AUTHORIZATION") String header,
                                                         @PathVariable("studentId") Long studentId,
@@ -69,7 +70,7 @@ public class StudentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @IsValidStudent
+    @IsValidStudentOrAdmin
     @RolesAllowed({"STUDENT", "ADMIN"})
     public HttpResponse<Set<CourseModel>> getCoursesOfStudent(@RequestHeader("AUTHORIZATION") String header,
                                                               @PathVariable("studentId") Long studentId,

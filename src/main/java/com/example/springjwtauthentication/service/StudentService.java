@@ -39,7 +39,8 @@ public class StudentService {
             student.get().getCourses().forEach(c -> {
                 if (c.getId().equals(courseId)) {
                     alreadyEnrolled.set(true);
-                    return;
+                    response.setSuccess(true);
+                    response.setMessage("already enrolled");
                 }
             });
             if (!alreadyEnrolled.get()) {
@@ -47,9 +48,9 @@ public class StudentService {
                 studentRepository.save(student.get());
                 response.setSuccess(true);
                 response.setMessage("success");
+                return response;
             }
         }
-        response.setMessage("failure");
         return response;
     }
 
@@ -76,9 +77,9 @@ public class StudentService {
         return response;
     }
 
-    public HttpResponse<Boolean> optOutAndDeleteStudent(Long studentId) {
+    public HttpResponse<String> optOutAndDeleteStudent(Long studentId) {
 
-        HttpResponse<Boolean> response = new HttpResponse<>();
+        HttpResponse<String> response = new HttpResponse<>();
         Optional<Student> student = studentRepository.findById(studentId);
         if (student.isPresent()) {
             studentRepository.delete(student.get());

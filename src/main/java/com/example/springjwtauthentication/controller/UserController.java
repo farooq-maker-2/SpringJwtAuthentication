@@ -1,7 +1,6 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.entity.User;
-import com.example.springjwtauthentication.service.StudentService;
 import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.view.request.LoginCreds;
 import com.example.springjwtauthentication.view.response.HttpResponse;
@@ -19,9 +18,7 @@ import javax.annotation.security.RolesAllowed;
 public class UserController {
 
     private final UserService userService;
-    private final StudentService studentService;
 
-    @RolesAllowed({"TEACHER", "STUDENT"})
     @Operation(summary = "this api is to register the user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
@@ -31,7 +28,6 @@ public class UserController {
 
         return userService.registerUser(user);
     }
-
 
     @PostMapping(path = "/users/login", produces = "application/json", consumes = "application/json")
     @Operation(summary = "this api is to login user")
@@ -43,16 +39,16 @@ public class UserController {
         return userService.loginUser(loginCreds);
     }
 
-    @RolesAllowed({"TEACHER", "STUDENT"})
+    @RolesAllowed({"ADMIN", "TEACHER", "STUDENT"})
     @Operation(summary = "this api is to deactivate user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
     @DeleteMapping(path = "/users/{userId}/deactivate/{role}", produces = "application/json")
-    public HttpResponse<Boolean> deactivateUser(@RequestHeader("AUTHORIZATION") String header,
-                                                @PathVariable("userId") Long userId,
-                                                @PathVariable("role") String role) {
+    public HttpResponse<String> deactivateUser(@RequestHeader("AUTHORIZATION") String header,
+                                               @PathVariable("userId") Long userId,
+                                               @PathVariable("role") String role) {
 
-        return studentService.optOutAndDeleteStudent(userId);
+        return userService.deactivateUser(userId, role);
     }
 }

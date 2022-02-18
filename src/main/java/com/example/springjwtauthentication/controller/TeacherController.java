@@ -1,6 +1,8 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
+import com.example.springjwtauthentication.annotations.IsValidTeacherOrAdmin;
+import com.example.springjwtauthentication.annotations.IsValidTeacherOrStudentOrAdmin;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.TeacherService;
 import com.example.springjwtauthentication.view.response.HttpResponse;
@@ -22,15 +24,6 @@ import java.util.Set;
 public class TeacherController {
 
     private final TeacherService teacherService;
-
-    @RolesAllowed({"TEACHER", "ADMIN"})
-    @IsValidTeacher
-    @PutMapping(path = "/teachers/{teacherId}/deactivate", produces = "application/json")
-    public HttpResponse<String> deactivateTeacher(@RequestHeader("AUTHORIZATION") String header,
-                                                  @PathVariable("teacherId") Long teacherId) {
-
-        return teacherService.deactivateTeacher(teacherId);
-    }
 
     @RolesAllowed({"ADMIN"})
     @Operation(summary = "this api is to list all teachers")
@@ -58,8 +51,8 @@ public class TeacherController {
         return teacherService.listTeachersByName(teacherName, teacherName);
     }
 
-    @RolesAllowed({"STUDENT", "Teacher", "ADMIN"})
-    @IsValidTeacher
+    @RolesAllowed({"STUDENT", "TEACHER", "ADMIN"})
+    @IsValidTeacherOrStudentOrAdmin
     @GetMapping(path = "/teachers/{teacherId}/courses", produces = "application/json")
     public HttpResponse<Set<CourseModel>> getCoursesOfTeacher(@RequestHeader("AUTHORIZATION") String header,
                                                               @PathVariable("teacherId") Long teacherId,

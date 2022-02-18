@@ -25,6 +25,8 @@ import java.util.Collection;
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
 
+    private final TeacherService teacherService;
+    private final StudentService studentService;
     private final AdminRepository adminRepository;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
@@ -76,6 +78,17 @@ public class UserService implements UserDetailsService {
         } else if (user.getRole().equalsIgnoreCase("teacher")) {
             teacherRepository.save(UserMapper.toTeacher(user));
             response.setSuccess(true);
+        }
+        return response;
+    }
+
+    public HttpResponse<String> deactivateUser(Long userId, String role) {
+
+        HttpResponse<String> response =new HttpResponse<>();
+        if (role.equals("teacher")) {
+            response = teacherService.deactivateTeacher(userId);
+        } else if (role.equals("student")) {
+            response = studentService.optOutAndDeleteStudent(userId);
         }
         return response;
     }
