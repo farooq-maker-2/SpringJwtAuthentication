@@ -77,7 +77,7 @@ public class JwtHelper {
         }
     }
 
-    public static Long getUserFromJwt(String token) {
+    public static Long getUserIdFromJwt(String token) {
 
         if (token != null && token.startsWith("Bearer ")) {
 
@@ -88,6 +88,33 @@ public class JwtHelper {
                 DecodedJWT decodedJWT = verifier.verify(jwt_token);
                 return Long.valueOf(decodedJWT.getSubject());
 
+            } catch (Exception exception) {
+                throw new ResourceAccessException("resource not allowed");
+            }
+        } else {
+            throw new ResourceAccessException("resource not allowed");
+        }
+    }
+
+    public static String getUserRoleFromJwt(String token) {
+        String role = "";
+        if (token != null && token.startsWith("Bearer ")) {
+
+            try {
+                String jwt_token = token.substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(jwt_token);
+                if (decodedJWT.getClaims().get("roles").toString().contains("TEACHER")) {
+                    return "TEACHER";
+                }
+                if (decodedJWT.getClaims().get("roles").toString().contains("STUDENT")) {
+                    return "STUDENT";
+                }
+                if (decodedJWT.getClaims().get("roles").toString().contains("ADMIN")) {
+                    return "ADMIN";
+                }
+                return role;
             } catch (Exception exception) {
                 throw new ResourceAccessException("resource not allowed");
             }
