@@ -92,7 +92,7 @@ public class StudentService {
 
         HttpResponse<Page<UserView>> response = new HttpResponse<>();
         Page<Student> students = studentRepository.
-                findAll(PageRequest.of(page.orElse(0), pageSize.orElse(5)));
+                findAll(PageRequest.of(page.orElse(0), pageSize.orElse(20)));
         List<UserView> userViews = new ArrayList<>();
         students.stream().forEach(student -> {
             userViews.add(UserView.toUserView(student));
@@ -102,11 +102,10 @@ public class StudentService {
         return response;
     }
 
-    public HttpResponse<Set<CourseModel>> getCoursesOfStudent(Long studentId, Optional<Integer> page) {
+    public HttpResponse<Set<CourseModel>> getCoursesOfStudent(Long studentId, Optional<Integer> page, Optional<Integer> pageSize) {
 
         HttpResponse<Set<CourseModel>> response = new HttpResponse<>();
-        int pageSize = 5;
-        int fromIndex = page.orElse(0) * pageSize;
+        int fromIndex = page.orElse(0) * pageSize.orElse(20);
         Optional<Student> student = studentRepository.findById(studentId);
         if (student.isPresent()) {
             Set<Course> courses = student.get().getCourses();
@@ -116,7 +115,7 @@ public class StudentService {
             }
             List<CourseModel> coursesList = new ArrayList<>(courseModels);
             // toIndex exclusive
-            response.setData(new HashSet<>(coursesList.subList(fromIndex, Math.min(fromIndex + pageSize, coursesList.size()))));
+            response.setData(new HashSet<>(coursesList.subList(fromIndex, Math.min(fromIndex + pageSize.orElse(20), coursesList.size()))));
             response.setSuccess(true);
         }
         return response;

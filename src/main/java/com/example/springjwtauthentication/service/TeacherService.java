@@ -70,14 +70,14 @@ public class TeacherService {
         if (teacher.isPresent()) {
             Set<Course> courses = teacher.get().getCourses();
             Set<CourseModel> courseModels = courses.stream().map(CourseMapper::toModel).collect(Collectors.toSet());
-            int fromIndex = page.orElse(0) * pageSize.orElse(5);
+            int fromIndex = page.orElse(0) * pageSize.orElse(20);
             if (courses.size() <= fromIndex) {
                 response.setData(Collections.emptySet());
             }
             List<CourseModel> coursesList = new ArrayList<>(courseModels);
             // toIndex exclusive
             response.setData(new HashSet<>(coursesList
-                    .subList(fromIndex, Math.min(fromIndex + pageSize.orElse(5), coursesList.size()))));
+                    .subList(fromIndex, Math.min(fromIndex + pageSize.orElse(20), coursesList.size()))));
             response.setSuccess(true);
         }
         return response;

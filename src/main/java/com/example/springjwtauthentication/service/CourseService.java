@@ -66,7 +66,7 @@ public class CourseService {
     public HttpResponse<Page<CourseModel>> listAllCourses(Optional<Integer> page, Optional<Integer> pageSize) {
 
         HttpResponse<Page<CourseModel>> response = new HttpResponse<>();
-        Page<Course> courses = courseRepository.findAll(PageRequest.of(page.orElse(0), pageSize.orElse(5)));
+        Page<Course> courses = courseRepository.findAll(PageRequest.of(page.orElse(0), pageSize.orElse(20)));
         List<CourseModel> courseModels = courses.stream().map(CourseMapper::toModel).collect(Collectors.toList());
         response.setData(new PageImpl<>(courseModels));
         response.setSuccess(true);

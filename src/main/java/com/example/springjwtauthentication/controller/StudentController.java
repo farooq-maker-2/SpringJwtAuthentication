@@ -62,20 +62,21 @@ public class StudentController {
                                                         @PathVariable("studentId") Long studentId,
                                                         @PathVariable("courseId") Long courseId) {
 
-        return studentService.optOutStudentFromCourse(studentId,courseId);
+        return studentService.optOutStudentFromCourse(studentId, courseId);
     }
 
-    @GetMapping(path = "/students/{studentId}/courses", produces = "application/json")
+    @IsValidStudentOrAdmin
+    @RolesAllowed({"STUDENT", "ADMIN"})
     @Operation(summary = "this api is to get all courses of student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
-    @IsValidStudentOrAdmin
-    @RolesAllowed({"STUDENT", "ADMIN"})
+    @GetMapping(path = "/students/{studentId}/courses", produces = "application/json")
     public HttpResponse<Set<CourseModel>> getCoursesOfStudent(@RequestHeader("AUTHORIZATION") String header,
                                                               @PathVariable("studentId") Long studentId,
-                                                              @RequestParam Optional<Integer> page) {
+                                                              @RequestParam Optional<Integer> page,
+                                                              @RequestParam Optional<Integer> pageSize) {
 
-        return studentService.getCoursesOfStudent(studentId,page);
+        return studentService.getCoursesOfStudent(studentId, page, pageSize);
     }
 }
