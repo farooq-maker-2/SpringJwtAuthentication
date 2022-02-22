@@ -92,7 +92,7 @@ public class StudentService {
 
         HttpResponse<Page<UserView>> response = new HttpResponse<>();
         Page<User> students = userRepository.
-                findAll(PageRequest.of(page.orElse(0), pageSize.orElse(20)));
+                findAllByRole("STUDENT", PageRequest.of(page.orElse(0), pageSize.orElse(20)));
         List<UserView> userViews = new ArrayList<>();
         students.stream().forEach(student -> {
             userViews.add(UserView.toUserView(student));

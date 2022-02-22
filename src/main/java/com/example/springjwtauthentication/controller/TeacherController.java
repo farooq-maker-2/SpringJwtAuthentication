@@ -30,9 +30,10 @@ public class TeacherController {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "400", description = "failure")})
     public HttpResponse<Page<UserView>> listAllTeachers(@RequestHeader("AUTHORIZATION") String header,
-                                                        @RequestParam Optional<Integer> page) {
+                                                        @RequestParam Optional<Integer> page,
+                                                        @RequestParam Optional<Integer> pageSize) {
 
-        return teacherService.listAllTeachers(page);
+        return teacherService.listAllTeachers(page, pageSize);
     }
 
     @RolesAllowed({"STUDENT", "TEACHER", "ADMIN"})

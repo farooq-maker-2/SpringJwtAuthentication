@@ -35,11 +35,12 @@ public class TeacherService {
         return response;
     }
 
-    public HttpResponse<Page<UserView>> listAllTeachers(Optional<Integer> page) {
+    public HttpResponse<Page<UserView>> listAllTeachers(Optional<Integer> page, Optional<Integer> pageSize) {
 
         HttpResponse<Page<UserView>> response = new HttpResponse<>();
         List<UserView> userViews = new ArrayList<>();
-        Page<User> teachers = userRepository.findAll(PageRequest.of(page.orElse(0), 5));
+        Page<User> teachers = userRepository.
+                findAllByRole("TEACHER", PageRequest.of(page.orElse(0), pageSize.orElse(20)));
         teachers.stream().forEach(teacher -> {
             userViews.add(UserView.toUserView(teacher));
         });
