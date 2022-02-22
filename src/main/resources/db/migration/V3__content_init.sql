@@ -7,4 +7,4 @@ CREATE TABLE `contents` (
                             PRIMARY KEY (`id`),
                             KEY `FK26ra050idh8wetyhulbictirv` (`course_id`),
                             CONSTRAINT `FK26ra050idh8wetyhulbictirv` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

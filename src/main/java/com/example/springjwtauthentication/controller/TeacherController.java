@@ -1,7 +1,5 @@
 package com.example.springjwtauthentication.controller;
 
-import com.example.springjwtauthentication.annotations.IsValidTeacher;
-import com.example.springjwtauthentication.annotations.IsValidTeacherOrAdmin;
 import com.example.springjwtauthentication.annotations.IsValidTeacherOrStudentOrAdmin;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.service.TeacherService;

@@ -1,18 +1,20 @@
 package com.example.springjwtauthentication.service;
 
-import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.example.springjwtauthentication.entity.Course;
-import com.example.springjwtauthentication.entity.Teacher;
+import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.mapper.CourseMapper;
 import com.example.springjwtauthentication.model.CourseModel;
 import com.example.springjwtauthentication.repository.ContentRepository;
 import com.example.springjwtauthentication.repository.CourseRepository;
-import com.example.springjwtauthentication.repository.TeacherRepository;
+import com.example.springjwtauthentication.repository.UserRepository;
+import com.example.springjwtauthentication.view.response.HttpResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +25,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final ContentRepository contentRepository;
-    private final TeacherRepository teacherRepository;
+    private final UserRepository userRepository;
 
     public HttpResponse<List<CourseModel>> findAllTimeTopTen() {
 
@@ -53,7 +55,7 @@ public class CourseService {
     public HttpResponse<Course> addCourse(Course course, Long teacherId) {
 
         HttpResponse<Course> response = new HttpResponse<>();
-        Optional<Teacher> teacher = teacherRepository.findById(teacherId);
+        Optional<User> teacher = userRepository.findById(teacherId);
         if (teacher.isPresent()) {
             course.setTeacher(teacher.get());
             courseRepository.save(course);

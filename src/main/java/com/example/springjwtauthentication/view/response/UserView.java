@@ -1,9 +1,6 @@
 package com.example.springjwtauthentication.view.response;
 
-import com.example.springjwtauthentication.entity.Admin;
-import com.example.springjwtauthentication.entity.Student;
-import com.example.springjwtauthentication.entity.Teacher;
-import com.example.springjwtauthentication.model.UserModel;
+import com.example.springjwtauthentication.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +18,7 @@ public class UserView {
     private String status = "activated";
     private String role;
 
-    public static UserView toUserView(Student studentModel) {
+    public static UserView toUserView(User studentModel) {
 
         if (studentModel == null) {
             return null;
@@ -30,44 +27,44 @@ public class UserView {
                     .firstName(studentModel.getFirstName())
                     .lastName(studentModel.getLastName())
                     .status(studentModel.getStatus())
-                    .role(studentModel.getRole()).build();
+                    .role(studentModel.getRole().toLowerCase()).build();
         }
     }
 
-    public static UserView toUserView(Teacher teacherModel) {
+//    public static UserView toUserView(Teacher teacherModel) {
+//
+//        if (teacherModel == null) {
+//            return null;
+//        } else {
+//            return UserView.builder().id(teacherModel.getId())
+//                    .firstName(teacherModel.getFirstName())
+//                    .lastName(teacherModel.getLastName())
+//                    .status(teacherModel.getStatus())
+//                    .role(teacherModel.getRole()).build();
+//        }
+//    }
 
-        if (teacherModel == null) {
-            return null;
-        } else {
-            return UserView.builder().id(teacherModel.getId())
-                    .firstName(teacherModel.getFirstName())
-                    .lastName(teacherModel.getLastName())
-                    .status(teacherModel.getStatus())
-                    .role(teacherModel.getRole()).build();
-        }
-    }
+//    public static UserView toUserView(UserModel userModel) {
+//        if (userModel == null) {
+//            return null;
+//        } else {
+//            return UserView.builder().id(userModel.getId())
+//                    .firstName(userModel.getFirstName())
+//                    .lastName(userModel.getLastName())
+//                    .status(userModel.getStatus())
+//                    .role(userModel.getRole()).build();
+//        }
+//    }
 
-    public static UserView toUserView(UserModel userModel) {
-        if (userModel == null) {
-            return null;
-        } else {
-            return UserView.builder().id(userModel.getId())
-                    .firstName(userModel.getFirstName())
-                    .lastName(userModel.getLastName())
-                    .status(userModel.getStatus())
-                    .role(userModel.getRole()).build();
-        }
-    }
-
-    public static UserView toUserView(Admin adminModel) {
-        if (adminModel == null) {
-            return null;
-        } else {
-            return UserView.builder().id(adminModel.getId())
-                    .firstName(adminModel.getFirstName())
-                    .lastName(adminModel.getLastName())
-                    .status(adminModel.getStatus())
-                    .role(adminModel.getRole()).build();
-        }
-    }
+//    public static UserView toUserView(Admin adminModel) {
+//        if (adminModel == null) {
+//            return null;
+//        } else {
+//            return UserView.builder().id(adminModel.getId())
+//                    .firstName(adminModel.getFirstName())
+//                    .lastName(adminModel.getLastName())
+//                    .status(adminModel.getStatus())
+//                    .role(adminModel.getRole()).build();
+//        }
+//    }
 }

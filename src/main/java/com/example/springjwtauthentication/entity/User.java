@@ -1,26 +1,13 @@
 package com.example.springjwtauthentication.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.Set;
 
+@Entity
+@Table(name = "users")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-/**
- *@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
- *
- * Entity inheritance means that we can use polymorphic
- * queries for retrieving all the subclass entities when
- * querying for a superclass.Since Hibernate is a
- * JPA implementation, it contains all of the above as well
- * as a few Hibernate-specific features related to inheritance.
- *
- * */
-@MappedSuperclass
 public class User {
 
     @Id
@@ -33,7 +20,7 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -43,6 +30,22 @@ public class User {
     private String status = "activated";
 
     @Column(nullable = false)
+    //private Set<String> roles;
     private String role;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "teacher")
+    private Set<Course> teacherCourses;
+
+    @JsonIgnore
+    @ManyToMany/*(mappedBy = "student")*/
+    @JoinTable(name = "user_course", joinColumns = {
+            @JoinColumn(name = "student_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "course_id", referencedColumnName = "id")
+            })
+    @JoinColumn(insertable = false, name = "created_at",
+            columnDefinition = "DATE DEFAULT CURRENT_DATE default '22-02-2022'")
+    private Set<Course> studentCourses;
 
 }

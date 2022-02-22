@@ -1,9 +1,14 @@
 package com.example.springjwtauthentication.controller;
 
 import com.example.springjwtauthentication.annotations.IsValidTeacher;
-import com.example.springjwtauthentication.entity.*;
+import com.example.springjwtauthentication.entity.Content;
+import com.example.springjwtauthentication.entity.Course;
+import com.example.springjwtauthentication.entity.User;
 import com.example.springjwtauthentication.model.ContentModel;
-import com.example.springjwtauthentication.service.*;
+import com.example.springjwtauthentication.service.CourseContentService;
+import com.example.springjwtauthentication.service.CourseService;
+import com.example.springjwtauthentication.service.TeacherService;
+import com.example.springjwtauthentication.service.UserService;
 import com.example.springjwtauthentication.view.response.HttpResponse;
 import com.google.api.client.util.IOUtils;
 import com.jlefebure.spring.boot.minio.MinioException;
@@ -23,10 +28,7 @@ import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static com.example.springjwtauthentication.security.jwt.JwtHelper.getUserIdFromJwt;
-import static com.example.springjwtauthentication.security.jwt.JwtHelper.getUserRoleFromJwt;
 
 @RestController
 @AllArgsConstructor
@@ -37,8 +39,7 @@ public class CourseContentController {
     private final CourseService courseService;
     private final CourseContentService courseContentService;
     private final TeacherService teacherService;
-    private final StudentService studentService;
-    private final AdminService adminService;
+    private final UserService userService;
 
     @IsValidTeacher
     @RolesAllowed({"TEACHER"})
@@ -54,10 +55,10 @@ public class CourseContentController {
 
         HttpResponse<String> response = new HttpResponse<>();
         if (isUploadAllowed(header, courseId)) {
-            Optional<Teacher> teacher = teacherService.findTeacherById(teacherId);
+            Optional<User> teacher = userService.findUserById(teacherId);
             Optional<Course> course = courseService.findCourseById(courseId);
 
-            if (teacher.isPresent() && teacher.get().getCourses().contains(course.get())) {
+            if (teacher.isPresent() && teacher.get().getTeacherCourses().contains(course.get())) {
                 Content content = Content
                         .builder()
                         .fileName(file.getOriginalFilename())
@@ -140,30 +141,14 @@ public class CourseContentController {
 
     private boolean isDownloadAllowed(String header, Long courseId) {
 
-        Optional<Teacher> teacher = null;
-        Optional<Student> student = null;
-        Optional<Admin> admin = null;
         boolean allowed = false;
         Long userId = getUserIdFromJwt(header);
-        String role = getUserRoleFromJwt(header);
-        if (role.equals("TEACHER")) {
-            teacher = teacherService.findTeacherById(userId);
-        } else if (role.equals("STUDENT")) {
-            student = studentService.findStudentById(getUserIdFromJwt(header));
-        } else if (role.equals("ADMIN")) {
-            admin = adminService.findAdminById(getUserIdFromJwt(header));
-        }
         Optional<Course> course = courseService.findCourseById(courseId);
-        if (course.isPresent()) {
-            if (student != null && student.isPresent()) {
-                if (student.get().getCourses().contains(course.get())) {
-                    allowed = true;
-                }
-            } else if (teacher != null && teacher.isPresent()) {
-                if (teacher.get().getCourses().contains(course.get())) {
-                    allowed = true;
-                }
-            } else if (admin != null && admin.isPresent()) {
+        Optional<User> user = userService.findUserById(userId);
+        if (course.isPresent() && user != null && user.isPresent()) {
+            if (user.get().getStudentCourses().contains(course.get())) {
+                allowed = true;
+            } else if (user.get().getRole().contains("admin")) {
                 allowed = true;
             }
         }
@@ -173,17 +158,14 @@ public class CourseContentController {
     private boolean isUploadAllowed(String header, Long courseId) {
 
         boolean allowed = false;
-        Optional<Teacher> user = teacherService.findTeacherById(getUserIdFromJwt(header));
+        Optional<User> user = userService.findUserById(getUserIdFromJwt(header));
         Optional<Course> course = courseService.findCourseById(courseId);
-        if (course.isPresent()) {
-            if (user.isPresent() && user.get().getRole().equals("student")) {
-                return false;
-            } else if (user.isPresent() && user.get().getRole().equals("teacher")) {
-                Teacher teacher = teacherService.findTeacherByEmail(user.get().getEmail());
-                if (teacher.getCourses().contains(course.get())) {
+        if (user.isPresent() && course.isPresent()) {
+            if (user.isPresent() && user.get().getRole().equalsIgnoreCase("teacher")) {
+                if (user.get().getTeacherCourses().contains(course.get())) {
                     allowed = true;
                 }
-            } else if (user.get().getRole().equals("admin")) {
+            } else if (user.get().getRole().equalsIgnoreCase("admin")) {
                 allowed = true;
             }
         }

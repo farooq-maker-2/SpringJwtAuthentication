@@ -27,16 +27,18 @@ public class Course {
     @Column(nullable = false)
     private String level;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
-
     @JsonIgnore
     @OneToMany(mappedBy = "course")
     private List<Content> courseContents;
 
     @JsonIgnore
-    @ManyToMany(mappedBy="courses")
-    private List<Student> students;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy="studentCourses")
+    //@JoinColumn(name = "student_id")
+    private List<User> student;
 }
 
