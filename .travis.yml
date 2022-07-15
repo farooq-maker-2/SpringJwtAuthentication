@@ -3,3 +3,10 @@
 
 language: java
 
+script: mvn package -DskipTests
+
+branches:
+  only:
+    - master
+  except:
+    - nightly
