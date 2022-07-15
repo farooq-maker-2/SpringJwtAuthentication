@@ -1,0 +1,5 @@
+# https://blog.travis-ci.com/2022-02-11-springboot
+# https://www.baeldung.com/ops/travis-ci-build-pipeline
+
+language: java
+
