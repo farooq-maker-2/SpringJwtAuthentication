@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -43,7 +44,7 @@ public class CourseController {
             @ApiResponse(responseCode = "400", description = "failure")})
     public HttpResponse<Page<CourseModel>> listAllCourses(@RequestHeader("AUTHORIZATION") String header,
                                                           @RequestParam Optional<Integer> page,
-                                                          @RequestParam Optional<Integer> pageSize) {
+                                                          @RequestParam Optional<Integer> pageSize, Authentication authentication) {
 
         return courseService.listAllCourses(page, pageSize);
     }
